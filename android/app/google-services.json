@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "323737700336",
+    "project_id": "appwrite-hackathon",
+    "storage_bucket": "appwrite-hackathon.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:323737700336:android:7523e4730a74cc531f7f35",
+        "android_client_info": {
+          "package_name": "com.appwrite.hackathon.appwrite_hackathon"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCRdnDFzjw6rqOGpMrCFmFb8pzqT-RqQOc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
