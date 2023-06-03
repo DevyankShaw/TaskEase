@@ -41,7 +41,10 @@
 </head>
 <body>
   <script>
-    window.addEventListener('load', function(ev) {
+    window.addEventListener('load', function (ev) {
+      // Register Firebase Messaging service worker.
+      navigator.serviceWorker.register('firebase-messaging-sw.js');
+
       // Download main.dart.js
       _flutter.loader.loadEntrypoint({
         serviceWorker: {
