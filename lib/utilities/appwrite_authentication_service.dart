@@ -15,6 +15,15 @@ class AppwriteAuthenticationService {
     _account = Account(_client);
   }
 
+  AppwriteAuthenticationService.web({required String jwt}) {
+    _client = Client()
+      ..setEndpoint(Constants.endPoint) // Your API Endpoint
+      ..setProject(Constants.projectId) // Your project ID
+      ..setJWT(jwt)
+      ..setSelfSigned();
+    _account = Account(_client);
+  }
+
   Future<Token> createPhoneSession({required String mobileNoWithCountryCode}) {
     try {
       return _account.createPhoneSession(
@@ -57,6 +66,14 @@ class AppwriteAuthenticationService {
   Future<User> get() {
     try {
       return _account.get();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Jwt> createJWT() {
+    try {
+      return _account.createJWT();
     } catch (e) {
       rethrow;
     }

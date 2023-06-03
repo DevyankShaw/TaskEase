@@ -26,3 +26,17 @@ void showInfoMessage(BuildContext context, {required String message}) {
     ),
   );
 }
+
+Future<void> sendPushMessage({
+  required String receiverDeviceToken,
+  required String payload,
+}) async {
+  if (receiverDeviceToken.isEmpty) {
+    debugPrint('Unable to send FCM message, no token exists.');
+    return;
+  }
+
+  try {} catch (e) {
+    rethrow;
+  }
+}

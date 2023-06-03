@@ -1,6 +1,5 @@
 import 'package:appwrite/models.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 
 import '../utilities/utilities.dart';
 
@@ -13,12 +12,18 @@ class AuthProvider with ChangeNotifier {
 
   Token? get token => _token;
 
-  late final AppwriteAuthenticationService _authService;
+  late AppwriteAuthenticationService _authService;
 
   late final _getFutureLoggedInUser = _getLoggedInUser();
 
   AuthProvider() {
-    _authService = AppwriteAuthenticationService();
+    if (kIsWeb && SharedPreference.instance.containsKey(Constants.userToken)) {
+      final userToken =
+          SharedPreference.instance.getString(Constants.userToken)!;
+      _authService = AppwriteAuthenticationService.web(jwt: userToken);
+    } else {
+      _authService = AppwriteAuthenticationService();
+    }
     _getFutureLoggedInUser;
   }
 
@@ -66,17 +71,46 @@ class AuthProvider with ChangeNotifier {
 
   Future<void> logout() async {
     try {
-      final currentSession = await _authService.getCurrentSession();
+      if (kIsWeb) {
+        await SharedPreference.instance.remove(Constants.userToken);
+      } else {
+        final currentSession = await _authService.getCurrentSession();
 
-      await _authService.deleteSession(
-        sessionId: currentSession.$id,
-      );
+        await _authService.deleteSession(
+          sessionId: currentSession.$id,
+        );
+
+        _token = null;
+      }
 
       _currentUser = null;
-      _token = null;
       notifyListeners();
     } catch (e) {
       rethrow;
+    }
+  }
+
+  Future<String?> generateJWT() async {
+    String? jwt;
+
+    try {
+      final jsonWebToken = await _authService.createJWT();
+
+      jwt = jsonWebToken.jwt;
+    } catch (error, stackTrace) {
+      debugPrint('Error $error occurred at stackTrace $stackTrace');
+    }
+
+    return jwt;
+  }
+
+  Future<void> loginWithJWT({required String jwt}) async {
+    try {
+      _authService = AppwriteAuthenticationService.web(jwt: jwt);
+
+      await _getLoggedInUser();
+    } catch (error, stackTrace) {
+      debugPrint('Error $error occurred at stackTrace $stackTrace');
     }
   }
 

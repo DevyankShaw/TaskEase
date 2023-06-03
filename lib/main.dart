@@ -1,12 +1,105 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import 'firebase_options.dart';
 import 'providers/providers.dart';
 import 'screens/screens.dart';
 import 'utilities/utilities.dart';
 
-void main() {
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await setupFlutterNotifications();
+  showFlutterNotification(message);
+  // If you're going to use other Firebase services in the background, such as Firestore,
+  // make sure you call `initializeApp` before using other Firebase services.
+  debugPrint('Handling a background message ${message.messageId}');
+}
+
+/// Create a [AndroidNotificationChannel] for heads up notifications
+late AndroidNotificationChannel channel;
+
+bool isFlutterLocalNotificationsInitialized = false;
+
+Future<void> setupFlutterNotifications() async {
+  if (isFlutterLocalNotificationsInitialized) {
+    return;
+  }
+  channel = const AndroidNotificationChannel(
+    Constants.notificationChannelId, // id
+    Constants.notificationChannelName, // title
+    description: Constants.notificationChannelDescription, // description
+    importance: Importance.high,
+  );
+
+  flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+  /// Create an Android Notification Channel.
+  ///
+  /// We use this channel in the `AndroidManifest.xml` file to override the
+  /// default FCM channel to enable heads up notifications.
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(channel);
+
+  /// Update the iOS foreground notification presentation options to allow
+  /// heads up notifications.
+  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
+  isFlutterLocalNotificationsInitialized = true;
+}
+
+void showFlutterNotification(RemoteMessage message) {
+  RemoteNotification? notification = message.notification;
+  AndroidNotification? android = message.notification?.android;
+  if (notification != null && android != null && !kIsWeb) {
+    flutterLocalNotificationsPlugin.show(
+      notification.hashCode,
+      notification.title,
+      notification.body,
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          Constants.notificationChannelId,
+          Constants.notificationChannelName,
+          channelDescription: Constants.notificationChannelDescription,
+          // TODO add a proper drawable resource to android, for now using
+          //      one that already exists in example app.
+          icon: 'launch_background',
+        ),
+      ),
+    );
+  }
+}
+
+/// Initialize the [FlutterLocalNotificationsPlugin] package.
+late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+
+Future<void> requestPermission() async {
+  NotificationSettings settings =
+      await FirebaseMessaging.instance.requestPermission();
+
+  debugPrint('User granted permission: ${settings.authorizationStatus}');
+}
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await SharedPreference.init();
+  if (kIsWeb) {
+    await requestPermission();
+  } else {
+    await setupFlutterNotifications();
+  }
+  // Set the background messaging handler early on, as a named top-level function
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   runApp(MyApp());
 }
 
@@ -33,7 +126,7 @@ class MyApp extends StatelessWidget {
   late final GoRouter _router = GoRouter(
     debugLogDiagnostics: true,
     refreshListenable: _authProvider,
-    routes: <GoRoute>[
+    routes: [
       GoRoute(
         name: Routes.home.toName,
         path: Routes.home.toPath,
@@ -43,6 +136,11 @@ class MyApp extends StatelessWidget {
         name: Routes.login.toName,
         path: Routes.login.toPath,
         builder: (context, state) => const LoginScreen(),
+      ),
+      GoRoute(
+        name: Routes.qrScanner.toName,
+        path: Routes.qrScanner.toPath,
+        builder: (context, state) => const QrScannerScreen(),
       ),
     ],
     // redirect to the login page if the user is not logged in
