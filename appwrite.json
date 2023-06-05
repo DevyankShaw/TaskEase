@@ -1,0 +1,21 @@
+{
+    "projectId": "646cdb1f4e60210477d9",
+    "projectName": "Appwrite Hackathon",
+    "functions": [
+        {
+            "$id": "trigger-fcm",
+            "name": "trigger-fcm",
+            "runtime": "node-16.0",
+            "path": "server/trigger-fcm",
+            "entrypoint": "src/index.js",
+            "ignore": [
+                "node_modules",
+                ".npm"
+            ],
+            "execute": [],
+            "events": [],
+            "schedule": "",
+            "timeout": 15
+        }
+    ]
+}
