@@ -21,7 +21,7 @@ const SCOPES = [MESSAGING_SCOPE];
 // [START retrieve_access_token]
 function getAccessToken() {
     return new Promise(function (resolve, reject) {
-        const key = require('../server/service-account.json');
+        const key = require('../trigger-fcm-local/service-account.json');
         const jwtClient = new google.auth.JWT(
             key.client_email,
             null,
@@ -86,7 +86,7 @@ function buildMobileMessage() {
             'token': 'd-EIgAVxTneFLGFEOlHluX:APA91bGpfGH9pILn71LdfssEoQODJ1wNif-d_Z0tIW02od79ARZnuGzzqo0F2x6FE-JI93NBgICRBnd_PgTsWl49w-Xt3-l98791No6U_qaVkAPQTXRbxDS2DY8Bw78B-w3cGccnhOZ7',
             'notification': {
                 'title': 'New Login Detected',
-                'body': 'Logged in with your user token'
+                'body': 'Logged in web with your credentials'
             }
         }
     };
@@ -100,28 +100,28 @@ function buildMobileMessage() {
 function buildWebMessage() {
     return {
         'message': {
-            'token': 'cfKNdcZLMI5J0ihhqRj5Wf:APA91bE1NWjI7SLbeFOl1s3QNUeQo3KAKzqCOJekXr3ZpntyUqIV71KwEJH2xtwpDmUv85tKDZ9TygNwxDwiJzYw9hv0c9gYcO8ccHJVG_o3N4b3Sxkg4-8HWbkGmoPVhOjoIfHH_bqc',
+            'token': 'd5hwSSibVKUSa2a5_8IfkC:APA91bEi330DI-VbHHFR_GPenvGjY-ydpB6sJeKVxftBEhfBzjTr5M-GfHu1SfcaVe1OCUrVjdcdgleI_SVtGSPnuqtM2XlXnVBVpODbaYmfilkjkUSrLvjaMafNPjVrgLOhREOaaSKu',
             'data': {
-                'userToken': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiI2NDcxZmQzZWU0MDIxNWQzMjA3NCIsInNlc3Npb25JZCI6IjY0NzFmZDU2NWIyNmYzMWY4NjdmIiwiZXhwIjoxNjg1Nzk4NDIyfQ.NyC6FJT8xqJmW3jGAfDd1jPauqCFRIOfGdUrfSESb2A',
+                'userToken': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiI2NDcxZmQzZWU0MDIxNWQzMjA3NCIsInNlc3Npb25JZCI6IjY0NzFmZDU2NWIyNmYzMWY4NjdmIiwiZXhwIjoxNjg1ODY5MTUyfQ.6pJrPChBX2Ka64mN7PQ8Idjpo8dGhuTwDX8H1Q6XwoY',
                 'deviceToken': 'd-EIgAVxTneFLGFEOlHluX:APA91bGpfGH9pILn71LdfssEoQODJ1wNif-d_Z0tIW02od79ARZnuGzzqo0F2x6FE-JI93NBgICRBnd_PgTsWl49w-Xt3-l98791No6U_qaVkAPQTXRbxDS2DY8Bw78B-w3cGccnhOZ7'
             }
         }
     };
 }
 
-const message = process.argv[2];
-if (message && message == 'web-message') {
+const messageFor = process.argv[2];
+if (messageFor && messageFor == 'web') {
     const webMessage = buildWebMessage();
-    console.log('FCM request body for message using web notification object:');
+    console.log('FCM request body for web message:');
     console.log(JSON.stringify(webMessage, null, 2));
     sendFcmMessage(buildWebMessage());
-} else if (message && message == 'mobile-message') {
+} else if (messageFor && messageFor == 'mobile') {
     const mobileMessage = buildMobileMessage();
     console.log('FCM request body for mobile message:');
     console.log(JSON.stringify(mobileMessage, null, 2));
     sendFcmMessage(buildMobileMessage());
 } else {
     console.log('Invalid command. Please use one of the following:\n'
-        + 'node index.js web-message\n'
-        + 'node index.js mobile-message');
+        + 'node index.js web\n'
+        + 'node index.js mobile');
 }
