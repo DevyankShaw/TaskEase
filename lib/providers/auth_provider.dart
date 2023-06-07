@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:appwrite/models.dart';
 import 'package:flutter/foundation.dart';
 
+import '../services/services.dart';
 import '../utilities/utilities.dart';
 
 class AuthProvider with ChangeNotifier {
@@ -12,19 +15,20 @@ class AuthProvider with ChangeNotifier {
 
   Token? get token => _token;
 
-  late AppwriteAuthenticationService _authService;
+  late AccountService _accountService;
+
+  late FunctionService _functionService;
 
   late final _getFutureLoggedInUser = _getLoggedInUser();
 
   AuthProvider() {
-    if (kIsWeb && SharedPreference.instance.containsKey(Constants.userToken)) {
-      final userToken =
-          SharedPreference.instance.getString(Constants.userToken)!;
-      _authService = AppwriteAuthenticationService.web(jwt: userToken);
-    } else {
-      _authService = AppwriteAuthenticationService();
-    }
+    _initServices();
     _getFutureLoggedInUser;
+  }
+
+  _initServices() {
+    _accountService = AccountService();
+    _functionService = FunctionService();
   }
 
   Future<void> generateOtp({
@@ -32,7 +36,7 @@ class AuthProvider with ChangeNotifier {
     required String mobileNo,
   }) async {
     try {
-      final token = await _authService.createPhoneSession(
+      final token = await _accountService.createPhoneSession(
         mobileNoWithCountryCode: '$countryCode$mobileNo',
       );
 
@@ -47,7 +51,7 @@ class AuthProvider with ChangeNotifier {
     required String secret,
   }) async {
     try {
-      await _authService.updatePhoneSession(
+      await _accountService.updatePhoneSession(
         userId: _token?.userId ?? '',
         secret: secret,
       );
@@ -60,7 +64,7 @@ class AuthProvider with ChangeNotifier {
 
   Future<void> _getLoggedInUser() async {
     try {
-      final user = await _authService.get();
+      final user = await _accountService.get();
 
       _currentUser = user;
       notifyListeners();
@@ -74,9 +78,9 @@ class AuthProvider with ChangeNotifier {
       if (kIsWeb) {
         await SharedPreference.instance.remove(Constants.userToken);
       } else {
-        final currentSession = await _authService.getCurrentSession();
+        final currentSession = await _accountService.getCurrentSession();
 
-        await _authService.deleteSession(
+        await _accountService.deleteSession(
           sessionId: currentSession.$id,
         );
 
@@ -94,7 +98,7 @@ class AuthProvider with ChangeNotifier {
     String? jwt;
 
     try {
-      final jsonWebToken = await _authService.createJWT();
+      final jsonWebToken = await _accountService.createJWT();
 
       jwt = jsonWebToken.jwt;
     } catch (error, stackTrace) {
@@ -104,13 +108,55 @@ class AuthProvider with ChangeNotifier {
     return jwt;
   }
 
-  Future<void> loginWithJWT({required String jwt}) async {
+  Future<void> loginWithJWT({
+    required String userToken,
+    required String deviceToken,
+  }) async {
     try {
-      _authService = AppwriteAuthenticationService.web(jwt: jwt);
+      ClientService.init(userToken: userToken);
+
+      _initServices();
 
       await _getLoggedInUser();
-    } catch (error, stackTrace) {
-      debugPrint('Error $error occurred at stackTrace $stackTrace');
+
+      // Cache userToken/jwt to redirect to home instead of login if user refreshes the browser
+      await SharedPreference.instance.setString(Constants.userToken, userToken);
+
+      // Send notification to the logged in mobile
+      final data = {
+        "messageFor": Constants.mobile,
+        "token": deviceToken,
+      };
+
+      await _functionService.createExecution(
+        functionId: Constants.triggerFcm,
+        data: jsonEncode(data),
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> sendNotificationToWeb({
+    required String token,
+    required String userToken,
+    required String deviceToken,
+  }) async {
+    try {
+      // Send notification to scanned qr web
+      final data = {
+        "messageFor": Constants.web,
+        "token": token,
+        "userToken": userToken,
+        "deviceToken": deviceToken,
+      };
+
+      await _functionService.createExecution(
+        functionId: Constants.triggerFcm,
+        data: jsonEncode(data),
+      );
+    } catch (e) {
+      rethrow;
     }
   }
 

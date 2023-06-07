@@ -10,6 +10,11 @@ class Constants {
   static const String notificationChannelDescription =
       'This channel is used for important notifications.';
 
+  // Function Id
+  static const String triggerFcm = 'trigger-fcm';
+
   static const String current = 'current';
   static const String userToken = 'userToken';
+  static const String mobile = 'mobile';
+  static const String web = 'web';
 }

@@ -21,7 +21,7 @@ const SCOPES = [MESSAGING_SCOPE];
 // [START retrieve_access_token]
 function getAccessToken() {
   return new Promise(function (resolve, reject) {
-    const key = require('../trigger-fcm/resources/service-account.json');
+    const key = require('../resources/service-account.json');
     const jwtClient = new google.auth.JWT(
       key.client_email,
       null,
@@ -45,8 +45,8 @@ function getAccessToken() {
 *
 * @param {object} fcmMessage will make up the body of the request.
 */
-function sendFcmMessage(fcmMessage) {
-  getAccessToken().then(function (accessToken) {
+async function sendFcmMessage(fcmMessage) {
+  await getAccessToken().then(function (accessToken) {
     const options = {
       hostname: HOST,
       path: PATH,
@@ -123,56 +123,46 @@ function buildWebMessage(receiverDeviceToken, userToken, senderDeviceToken) {
 */
 
 module.exports = async function (req, res) {
-  const payload = req.payload;
+  let messageFor, token, userToken, deviceToken;
 
-  res.json({
-    payload: payload,
-    messageFor: 'messageFor - ' + payload.messageFor,
-    token: 'token - ' + payload.token,
-    userToken: 'userToken - ' + payload.userToken,
-    deviceToken: 'deviceToken - ' + payload.deviceToken,
-  });
+  try {
+    const payload = JSON.parse(req.payload);
+    messageFor = payload.messageFor;
+    if (messageFor && messageFor == 'web') {
+      token = payload.token;
+      userToken = payload.userToken;
+      deviceToken = payload.deviceToken;
+    } else {
+      token = payload.token;
+    }
+  } catch (err) {
+    console.log(err);
+    throw new Error('Payload is invalid.');
+  }
 
-  // let messageFor = '', token = '', userToken = '', deviceToken = '';
+  if (messageFor && messageFor == 'web') {
+    const webMessage = buildWebMessage(token, userToken, deviceToken);
 
-  // try {
-  //   const payload = req.payload;
-  //   messageFor = payload.messageFor;
-  //   if (messageFor && messageFor === 'web') {
-  //     token = payload.token;
-  //     userToken = payload.userToken;
-  //     deviceToken = payload.deviceToken;
-  //   } else {
-  //     token = payload.token;
-  //   }
-  // } catch (err) {
-  //   console.log(err);
-  //   throw new Error('Payload is invalid.');
-  // }
+    console.log('FCM request body for web message:');
+    console.log(JSON.stringify(webMessage, null, 2));
 
-  // if (messageFor && messageFor === 'web') {
-  //   const webMessage = buildWebMessage(token, userToken, deviceToken);
+    await sendFcmMessage(webMessage);
+  } else if (messageFor && messageFor == 'mobile') {
+    const mobileMessage = buildMobileMessage(token);
 
-  //   console.log('FCM request body for web message:');
-  //   console.log(JSON.stringify(webMessage, null, 2));
+    console.log('FCM request body for mobile message:');
+    console.log(JSON.stringify(mobileMessage, null, 2));
 
-  //   sendFcmMessage(buildWebMessage());
-  // } else if (messageFor && messageFor === 'mobile') {
-  //   const mobileMessage = buildMobileMessage(token);
+    await sendFcmMessage(mobileMessage);
+  } else {
+    console.log('Invalid messageFor received. Please use one of the following:\n'
+      + 'web\n'
+      + 'mobile');
+  }
 
-  //   console.log('FCM request body for mobile message:');
-  //   console.log(JSON.stringify(mobileMessage, null, 2));
-
-  //   sendFcmMessage(buildMobileMessage());
-  // } else {
-  //   console.log('Invalid messageFor received. Please use one of the following:\n'
-  //     + 'web\n'
-  //     + 'mobile');
-  // }
-
-  // if (messageFor === 'web' || messageFor === 'mobile') {
-  //   res.send('Message send to ' + messageFor);
-  // } else {
-  //   res.send('Message failed to send to ' + messageFor);
-  // }
+  if (messageFor == 'web' || messageFor == 'mobile') {
+    res.send('Message send to ' + messageFor);
+  } else {
+    res.send('Message failed to send to ' + messageFor);
+  }
 };

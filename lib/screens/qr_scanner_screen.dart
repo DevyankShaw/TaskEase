@@ -1,8 +1,8 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
-import 'package:go_router/go_router.dart';
 
 import '../providers/providers.dart';
 import '../utilities/utilities.dart';
@@ -15,14 +15,14 @@ class QrScannerScreen extends StatefulWidget {
 }
 
 class _QrScannerScreenState extends State<QrScannerScreen> {
-  String? _deviceToken;
+  String? _senderDeviceToken;
   String? _receiverDeviceToken;
   late Stream<String> _tokenStream;
 
   void setToken(String? token) {
     debugPrint('Mobile Device Token: $token');
     setState(() {
-      _deviceToken = token;
+      _senderDeviceToken = token;
     });
   }
 
@@ -45,8 +45,7 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
             onDetect: (capture) async {
               final data = capture.barcodes.first.rawValue ?? '';
 
-              if (_receiverDeviceToken != null &&
-                  _receiverDeviceToken == data) {
+              if (_receiverDeviceToken == data || _senderDeviceToken == null) {
                 return;
               }
 
@@ -54,15 +53,7 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
 
               debugPrint('Receiver Device Token - $_receiverDeviceToken');
 
-              final userToken =
-                  await context.read<AuthProvider>().generateJWT();
-
-              debugPrint('User Token - $userToken');
-
-              context.pop();
-
-              // await sendMessage(scannedDeviceToken: receiverDeviceToken);
-              // context.pop();
+              await sendMessageToWeb();
             },
           ),
         ),
@@ -70,15 +61,16 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
     );
   }
 
-  Future<void> sendMessage() async {
+  Future<void> sendMessageToWeb() async {
     try {
       if (_receiverDeviceToken?.isEmpty ?? true) {
         debugPrint('Something went wrong on getting receiver/web device token');
         return;
       }
 
-      if (_deviceToken?.isEmpty ?? true) {
-        debugPrint('Something went wrong on generating sender/mobile device token');
+      if (_senderDeviceToken?.isEmpty ?? true) {
+        debugPrint(
+            'Something went wrong on generating sender/mobile device token');
         return;
       }
 
@@ -90,6 +82,14 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
         debugPrint('Something went wrong on generating jwt / user token');
         return;
       }
+
+      await context.read<AuthProvider>().sendNotificationToWeb(
+            token: _receiverDeviceToken!,
+            userToken: userToken!,
+            deviceToken: _senderDeviceToken!,
+          );
+
+      context.pop();
     } catch (error, stackTrace) {
       showErrorMessage(context, message: error.toString());
       debugPrint('Error $error occurred at stackTrace $stackTrace');

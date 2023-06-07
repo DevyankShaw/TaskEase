@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'providers/providers.dart';
 import 'screens/screens.dart';
+import 'services/services.dart';
 import 'utilities/utilities.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -93,6 +94,9 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await SharedPreference.init();
+  ClientService.init(
+    userToken: SharedPreference.instance.getString(Constants.userToken),
+  );
   if (kIsWeb) {
     await requestPermission();
   } else {

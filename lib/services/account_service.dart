@@ -1,27 +1,14 @@
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/models.dart';
 
-import 'utilities.dart';
+import '../utilities/utilities.dart';
+import 'services.dart';
 
-class AppwriteAuthenticationService {
-  late final Client _client;
+class AccountService {
   late final Account _account;
 
-  AppwriteAuthenticationService() {
-    _client = Client()
-      ..setEndpoint(Constants.endPoint) // Your API Endpoint
-      ..setProject(Constants.projectId) // Your project ID
-      ..setSelfSigned();
-    _account = Account(_client);
-  }
-
-  AppwriteAuthenticationService.web({required String jwt}) {
-    _client = Client()
-      ..setEndpoint(Constants.endPoint) // Your API Endpoint
-      ..setProject(Constants.projectId) // Your project ID
-      ..setJWT(jwt)
-      ..setSelfSigned();
-    _account = Account(_client);
+  AccountService() {
+    _account = Account(ClientService.client);
   }
 
   Future<Token> createPhoneSession({required String mobileNoWithCountryCode}) {

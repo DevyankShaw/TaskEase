@@ -114,12 +114,12 @@ if (messageFor && messageFor == 'web') {
     const webMessage = buildWebMessage();
     console.log('FCM request body for web message:');
     console.log(JSON.stringify(webMessage, null, 2));
-    sendFcmMessage(buildWebMessage());
+    sendFcmMessage(webMessage);
 } else if (messageFor && messageFor == 'mobile') {
     const mobileMessage = buildMobileMessage();
     console.log('FCM request body for mobile message:');
     console.log(JSON.stringify(mobileMessage, null, 2));
-    sendFcmMessage(buildMobileMessage());
+    sendFcmMessage(mobileMessage);
 } else {
     console.log('Invalid command. Please use one of the following:\n'
         + 'node index.js web\n'

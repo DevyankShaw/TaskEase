@@ -42,10 +42,6 @@ class _WebLoginViewState extends State<WebLoginView> {
       final deviceToken = message.data['deviceToken'];
 
       await onMessageReceived(userToken: userToken, deviceToken: deviceToken);
-
-      setState(() {
-        _loggingIn = false;
-      });
     });
   }
 
@@ -67,9 +63,10 @@ class _WebLoginViewState extends State<WebLoginView> {
     required String deviceToken,
   }) async {
     try {
-      await context.read<AuthProvider>().loginWithJWT(jwt: userToken);
-
-      await SharedPreference.instance.setString(Constants.userToken, userToken);
+      await context.read<AuthProvider>().loginWithJWT(
+            userToken: userToken,
+            deviceToken: deviceToken,
+          );
     } catch (error, stackTrace) {
       showErrorMessage(context, message: error.toString());
       debugPrint('Error $error occurred at stackTrace $stackTrace');
