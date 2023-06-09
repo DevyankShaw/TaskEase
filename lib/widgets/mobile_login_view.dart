@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 
 import '../providers/providers.dart';
 import '../utilities/utilities.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class MobileLoginView extends StatelessWidget {
   const MobileLoginView({super.key});
@@ -41,10 +43,36 @@ class _InputMobileNoViewState extends State<InputMobileNoView> {
   late final _formKey = GlobalKey<FormState>();
   late final _authProvider = context.read<AuthProvider>();
 
+  String? _countryCode;
+  bool _generatingOtp = false;
+
+  @override
+  void initState() {
+    _init();
+    super.initState();
+  }
+
   @override
   void dispose() {
     _mobileNoController.dispose();
     super.dispose();
+  }
+
+  _init() async {
+    _countryCode = await getCountryPhoneCode();
+    setState(() {});
+  }
+
+  Future<String> getCountryPhoneCode() async {
+    var response = await http.get(Uri.parse('http://ip-api.com/json'));
+    var jsonResponse = json.decode(response.body);
+    final isoCode = jsonResponse['countryCode'];
+    return countryList
+        .singleWhere(
+          (element) => element.isoCode == isoCode,
+          orElse: () => countryList.first,
+        )
+        .phoneCode;
   }
 
   @override
@@ -52,35 +80,68 @@ class _InputMobileNoViewState extends State<InputMobileNoView> {
     return Form(
       key: _formKey,
       autovalidateMode: AutovalidateMode.onUserInteraction,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TextFormField(
-            controller: _mobileNoController,
-            decoration: const InputDecoration(
-              label: Text('Mobile No'),
-              hintText: 'Enter Mobile No',
-              prefixText: '+91',
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            getLogo(logoPath: 'images/login.png'),
+            Row(
+              children: [
+                ConstrainedBox(
+                  constraints:
+                      const BoxConstraints.tightFor(width: 107, height: 60),
+                  child: DropdownButtonFormField<String?>(
+                    value: _countryCode,
+                    items: countryList.map<DropdownMenuItem<String>>(
+                      (country) {
+                        return DropdownMenuItem<String>(
+                          value: country.phoneCode,
+                          child: Text(country.phoneCode),
+                        );
+                      },
+                    ).toList(),
+                    onChanged: (String? value) {
+                      setState(() {
+                        _countryCode = value!;
+                      });
+                    },
+                    decoration:
+                        const InputDecoration(border: OutlineInputBorder()),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Flexible(
+                  child: TextFormField(
+                    controller: _mobileNoController,
+                    decoration: const InputDecoration(
+                      label: Text('Mobile No'),
+                      hintText: 'Enter Mobile No',
+                      border: OutlineInputBorder(),
+                    ),
+                    keyboardType: TextInputType.phone,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Enter Mobile No';
+                      } else if (_countryCode == '91' && value.length != 10) {
+                        return 'Mobile no is invalid';
+                      } else {
+                        return null;
+                      }
+                    },
+                  ),
+                ),
+              ],
             ),
-            maxLength: 10,
-            keyboardType: TextInputType.phone,
-            validator: (value) {
-              if (value!.isEmpty) {
-                return 'Enter Mobile No';
-              } else if (value.length != 10) {
-                return 'Mobile no is invalid';
-              } else {
-                return null;
-              }
-            },
-          ),
-          const SizedBox(height: 16),
-          ElevatedButton.icon(
-            onPressed: () => _generateOtp(),
-            icon: const Icon(Icons.phonelink_outlined),
-            label: const Text('Log In'),
-          )
-        ],
+            const SizedBox(height: 16),
+            _generatingOtp
+                ? const CircularProgressIndicator()
+                : ElevatedButton.icon(
+                    onPressed: () => _generateOtp(),
+                    icon: const Icon(Icons.phonelink_outlined),
+                    label: const Text('Get OTP'),
+                  )
+          ],
+        ),
       ),
     );
   }
@@ -88,13 +149,20 @@ class _InputMobileNoViewState extends State<InputMobileNoView> {
   Future<void> _generateOtp() async {
     if (_formKey.currentState!.validate()) {
       try {
+        setState(() {
+          _generatingOtp = true;
+        });
+
         final mobileNo = _mobileNoController.value.text.trim();
 
         await _authProvider.generateOtp(
-          countryCode: '+91',
+          countryCode: '+$_countryCode',
           mobileNo: mobileNo,
         );
       } catch (error, stackTrace) {
+        setState(() {
+          _generatingOtp = false;
+        });
         showErrorMessage(context, message: error.toString());
         debugPrint('Error $error occurred at stackTrace $stackTrace');
       }
@@ -115,6 +183,8 @@ class _InputMobileOtpViewState extends State<InputMobileOtpView> {
   late final _formKey = GlobalKey<FormState>();
   late final _authProvider = context.read<AuthProvider>();
 
+  bool _loggingIn = false;
+
   @override
   void dispose() {
     _mobileOtpController.dispose();
@@ -126,34 +196,38 @@ class _InputMobileOtpViewState extends State<InputMobileOtpView> {
     return Form(
       key: _formKey,
       autovalidateMode: AutovalidateMode.onUserInteraction,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TextFormField(
-            controller: _mobileOtpController,
-            decoration: const InputDecoration(
-              label: Text('Mobile OTP'),
-              hintText: 'Enter Mobile OTP',
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            getLogo(logoPath: 'images/otp.png'),
+            TextFormField(
+              controller: _mobileOtpController,
+              decoration: const InputDecoration(
+                label: Text('Mobile OTP'),
+                hintText: 'Enter Mobile OTP',
+              ),
+              maxLength: 6,
+              keyboardType: TextInputType.phone,
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return 'Enter Mobile OTP';
+                } else if (value.length != 6) {
+                  return 'Mobile otp is invalid';
+                } else {
+                  return null;
+                }
+              },
             ),
-            maxLength: 6,
-            keyboardType: TextInputType.phone,
-            validator: (value) {
-              if (value!.isEmpty) {
-                return 'Enter Mobile OTP';
-              } else if (value.length != 6) {
-                return 'Mobile otp is invalid';
-              } else {
-                return null;
-              }
-            },
-          ),
-          const SizedBox(height: 16),
-          ElevatedButton.icon(
-            onPressed: () => _loginWithOtp(),
-            icon: const Icon(Icons.login_outlined),
-            label: const Text('Submit'),
-          )
-        ],
+            const SizedBox(height: 16),
+            _loggingIn
+                ? const CircularProgressIndicator()
+                : ElevatedButton.icon(
+                    onPressed: () => _loginWithOtp(),
+                    icon: const Icon(Icons.login_outlined),
+                    label: const Text('Submit'),
+                  )
+          ],
+        ),
       ),
     );
   }
@@ -161,12 +235,19 @@ class _InputMobileOtpViewState extends State<InputMobileOtpView> {
   Future<void> _loginWithOtp() async {
     if (_formKey.currentState!.validate()) {
       try {
+        setState(() {
+          _loggingIn = true;
+        });
+
         final secret = _mobileOtpController.value.text.trim();
 
         await _authProvider.loginWithOtp(
           secret: secret,
         );
       } catch (error, stackTrace) {
+        setState(() {
+          _loggingIn = false;
+        });
         showErrorMessage(context, message: error.toString());
         debugPrint('Error $error occurred at stackTrace $stackTrace');
       }

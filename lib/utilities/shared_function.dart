@@ -40,3 +40,9 @@ Future<void> sendPushMessage({
     rethrow;
   }
 }
+
+Widget getLogo({required String logoPath, double? height}) => Material(
+      type: MaterialType.transparency,
+      elevation: 10.0,
+      child: Image.asset(logoPath, height: height),
+    );

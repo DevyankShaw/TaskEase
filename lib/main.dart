@@ -119,7 +119,7 @@ class MyApp extends StatelessWidget {
         title: 'Appwrite Hackathon',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          primarySwatch: Colors.blue,
+          primarySwatch: Colors.deepPurple,
         ),
       ),
     );
