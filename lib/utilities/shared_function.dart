@@ -41,8 +41,8 @@ Future<void> sendPushMessage({
   }
 }
 
-Widget getLogo({required String logoPath, double? height}) => Material(
+Widget loadAsset({required String assetName, double? height}) => Material(
       type: MaterialType.transparency,
       elevation: 10.0,
-      child: Image.asset(logoPath, height: height),
+      child: Image.asset('assets/$assetName', height: height),
     );

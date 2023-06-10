@@ -48,13 +48,28 @@ class _WebLoginViewState extends State<WebLoginView> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: _deviceToken != null && !_loggingIn
-          ? QrImageView(
-              data: _deviceToken!,
-              version: QrVersions.auto,
-              size: 200.0,
-            )
-          : const CircularProgressIndicator(),
+      child: ConstrainedBox(
+        constraints: BoxConstraints.tight(const Size(500, 500)),
+        child: Stack(
+          children: [
+            loadAsset(assetName: 'qr_view.png'),
+            Positioned(
+              right: 125,
+              bottom: 185,
+              child: SizedBox(
+                width: 150,
+                height: 150,
+                child: _deviceToken != null && !_loggingIn
+                    ? QrImageView(
+                        data: _deviceToken!,
+                        version: QrVersions.auto,
+                      )
+                    : const Center(child: CircularProgressIndicator()),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -68,6 +83,9 @@ class _WebLoginViewState extends State<WebLoginView> {
             deviceToken: deviceToken,
           );
     } catch (error, stackTrace) {
+      setState(() {
+        _loggingIn = false;
+      });
       showErrorMessage(context, message: error.toString());
       debugPrint('Error $error occurred at stackTrace $stackTrace');
     }

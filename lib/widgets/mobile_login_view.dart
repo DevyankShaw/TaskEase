@@ -84,7 +84,7 @@ class _InputMobileNoViewState extends State<InputMobileNoView> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            getLogo(logoPath: 'images/login.png'),
+            loadAsset(assetName: 'login.png'),
             Row(
               children: [
                 ConstrainedBox(
@@ -139,6 +139,8 @@ class _InputMobileNoViewState extends State<InputMobileNoView> {
                     onPressed: () => _generateOtp(),
                     icon: const Icon(Icons.phonelink_outlined),
                     label: const Text('Get OTP'),
+                    style: ElevatedButton.styleFrom(
+                        fixedSize: const Size(120, 40)),
                   )
           ],
         ),
@@ -199,12 +201,13 @@ class _InputMobileOtpViewState extends State<InputMobileOtpView> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            getLogo(logoPath: 'images/otp.png'),
+            loadAsset(assetName: 'otp.png'),
             TextFormField(
               controller: _mobileOtpController,
               decoration: const InputDecoration(
                 label: Text('Mobile OTP'),
                 hintText: 'Enter Mobile OTP',
+                border: OutlineInputBorder(),
               ),
               maxLength: 6,
               keyboardType: TextInputType.phone,
@@ -225,6 +228,8 @@ class _InputMobileOtpViewState extends State<InputMobileOtpView> {
                     onPressed: () => _loginWithOtp(),
                     icon: const Icon(Icons.login_outlined),
                     label: const Text('Submit'),
+                    style: ElevatedButton.styleFrom(
+                        fixedSize: const Size(120, 40)),
                   )
           ],
         ),

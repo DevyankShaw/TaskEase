@@ -8,6 +8,14 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return kIsWeb ? const WebLoginView() : const MobileLoginView();
+    return LayoutBuilder(
+      builder: (_, constraints) {
+        if (kIsWeb && constraints.maxWidth >= 500) {
+          return const WebLoginView();
+        } else {
+          return const MobileLoginView();
+        }
+      },
+    );
   }
 }
