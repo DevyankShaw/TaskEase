@@ -13,8 +13,15 @@ class Constants {
   // Function Id
   static const String triggerFcm = 'trigger-fcm';
 
+  // Task Status
+  static const String notStarted = 'Not Started';
+  static const String inProgress = 'In Progress';
+  static const String underReview = 'Under Review';
+  static const String completed = 'Completed';
+
   static const String current = 'current';
   static const String userToken = 'userToken';
   static const String mobile = 'mobile';
   static const String web = 'web';
+  static const String na = 'NA';
 }
