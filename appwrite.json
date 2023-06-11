@@ -3,10 +3,10 @@
     "projectName": "Appwrite Hackathon",
     "functions": [
         {
-            "$id": "trigger-fcm",
-            "name": "trigger-fcm",
+            "$id": "trigger_fcm",
+            "name": "trigger_fcm",
             "runtime": "node-16.0",
-            "path": "server/trigger-fcm",
+            "path": "server/trigger_fcm",
             "entrypoint": "src/index.js",
             "ignore": [
                 "node_modules",

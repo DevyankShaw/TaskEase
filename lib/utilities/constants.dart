@@ -11,7 +11,7 @@ class Constants {
       'This channel is used for important notifications.';
 
   // Function Id
-  static const String triggerFcm = 'trigger-fcm';
+  static const String triggerFcm = 'trigger_fcm';
 
   // Task Status
   static const String notStarted = 'Not Started';
