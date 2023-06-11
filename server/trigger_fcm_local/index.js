@@ -21,7 +21,7 @@ const SCOPES = [MESSAGING_SCOPE];
 // [START retrieve_access_token]
 function getAccessToken() {
     return new Promise(function (resolve, reject) {
-        const key = require('../trigger-fcm-local/service-account.json');
+        const key = require('../trigger_fcm_local/service-account.json');
         const jwtClient = new google.auth.JWT(
             key.client_email,
             null,
