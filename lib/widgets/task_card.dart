@@ -76,14 +76,6 @@ class TaskCard extends StatelessWidget {
                         size: 18,
                       ),
                     ),
-                  if (data.attachments?.isNotEmpty ?? false)
-                    const Tooltip(
-                      message: 'Attachment',
-                      child: Icon(
-                        Icons.attach_file_outlined,
-                        size: 18,
-                      ),
-                    ),
                 ],
               )
             ],

@@ -32,10 +32,6 @@ class _HomeScreenState extends State<HomeScreen> {
       taskId: 'task_id2',
       taskName: 'Make something 2',
       remarks: 'Update something 2',
-      attachments: [
-        'attach_1',
-        'attach_2',
-      ],
       isImportant: true,
       deadline: DateTime.now().copyWith(hour: 14, minute: 22),
       taskStatus: TaskStatus.inProgress,
@@ -67,7 +63,6 @@ class _HomeScreenState extends State<HomeScreen> {
       taskName: 'Make something 5',
       remarks: 'Update something 5',
       taskStatus: TaskStatus.notStarted,
-      attachments: ['attach_1'],
       isImportant: true,
       deadline: DateTime.now()
           .add(const Duration(days: 1))
@@ -163,12 +158,25 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        tooltip: 'Add Task',
+        onPressed: () {
+          context.push(
+            Routes.task.toPath,
+            extra: TaskData(),
+          );
+        },
+        child: const Icon(
+          Icons.add_circle_outline_outlined,
+          size: 28,
+        ),
+      ),
       body: Column(
         children: [
           const SearchField(),
           TaskCardLayoutGrid(
             crossAxisCount: 2,
-            items: _tasks,
+            tasks: _tasks,
           ),
         ],
       ),

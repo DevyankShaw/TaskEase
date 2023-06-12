@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import 'firebase_options.dart';
+import 'models/models.dart';
 import 'providers/providers.dart';
 import 'screens/screens.dart';
 import 'services/services.dart';
@@ -145,6 +146,12 @@ class MyApp extends StatelessWidget {
         name: Routes.qrScanner.toName,
         path: Routes.qrScanner.toPath,
         builder: (context, state) => const QrScannerScreen(),
+      ),
+      GoRoute(
+        name: Routes.task.toName,
+        path: Routes.task.toPath,
+        builder: (context, state) =>
+            TaskScreen(taskData: state.extra as TaskData),
       ),
     ],
     // redirect to the login page if the user is not logged in

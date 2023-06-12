@@ -2,6 +2,7 @@ enum Routes {
   home,
   login,
   qrScanner,
+  task,
 }
 
 extension RouteExtension on Routes {
@@ -13,6 +14,8 @@ extension RouteExtension on Routes {
         return "/login";
       case Routes.qrScanner:
         return "/qr-scanner";
+      case Routes.task:
+        return "/task";
       default:
         return "/";
     }
@@ -26,6 +29,8 @@ extension RouteExtension on Routes {
         return "login";
       case Routes.qrScanner:
         return "qr-scanner";
+      case Routes.task:
+        return "task";
       default:
         return "home";
     }

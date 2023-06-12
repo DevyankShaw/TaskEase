@@ -9,7 +9,6 @@ class Task {
   final DateTime updatedAt;
   final String updatedBy;
   final String? remarks;
-  final List<String>? attachments;
   final bool? isImportant;
   final DateTime? deadline;
 
@@ -22,7 +21,6 @@ class Task {
     required this.updatedAt,
     required this.updatedBy,
     this.remarks,
-    this.attachments,
     this.isImportant,
     this.deadline,
   });

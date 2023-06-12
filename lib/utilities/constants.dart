@@ -19,6 +19,10 @@ class Constants {
   static const String underReview = 'Under Review';
   static const String completed = 'Completed';
 
+  // Mode
+  static const String add = 'Add';
+  static const String update = 'Update';
+
   static const String current = 'current';
   static const String userToken = 'userToken';
   static const String mobile = 'mobile';
