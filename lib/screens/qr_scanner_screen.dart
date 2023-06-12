@@ -37,6 +37,7 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: const Text('QR Scanner')),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -45,6 +46,7 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
             onDetect: (capture) async {
               final data = capture.barcodes.first.rawValue ?? '';
 
+              // Restrict to accept scanned data one time only
               if (_receiverDeviceToken == data || _senderDeviceToken == null) {
                 return;
               }
@@ -64,13 +66,19 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
   Future<void> sendMessageToWeb() async {
     try {
       if (_receiverDeviceToken?.isEmpty ?? true) {
-        debugPrint('Something went wrong on getting receiver/web device token');
+        showErrorMessage(
+          context,
+          message: 'Something went wrong on getting receiver/web device token',
+        );
         return;
       }
 
       if (_senderDeviceToken?.isEmpty ?? true) {
-        debugPrint(
-            'Something went wrong on generating sender/mobile device token');
+        showErrorMessage(
+          context,
+          message:
+              'Something went wrong on generating sender/mobile device token',
+        );
         return;
       }
 
@@ -79,7 +87,10 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
       debugPrint('User Token - $userToken');
 
       if (userToken?.isEmpty ?? true) {
-        debugPrint('Something went wrong on generating jwt / user token');
+        showErrorMessage(
+          context,
+          message: 'Something went wrong on generating jwt / user token',
+        );
         return;
       }
 

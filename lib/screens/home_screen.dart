@@ -145,6 +145,7 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           if (!kIsWeb)
             IconButton(
+              tooltip: 'QR Scanner',
               onPressed: () => _openQrScanner(context),
               icon: const Icon(Icons.qr_code_scanner_outlined),
             ),
@@ -156,6 +157,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 )
               : IconButton(
+                  tooltip: 'Log Out',
                   onPressed: () => _logout(context),
                   icon: const Icon(Icons.logout_outlined),
                 ),
