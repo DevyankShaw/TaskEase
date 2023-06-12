@@ -5,7 +5,10 @@ import 'utilities.dart';
 void showErrorMessage(BuildContext context, {required String message}) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
-      content: Text(message),
+      content: Text(
+        message,
+        style: const TextStyle(color: Colors.black87),
+      ),
       backgroundColor: Colors.redAccent,
     ),
   );
@@ -14,8 +17,11 @@ void showErrorMessage(BuildContext context, {required String message}) {
 void showSuccessMessage(BuildContext context, {required String message}) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
-      content: Text(message),
-      backgroundColor: Colors.greenAccent,
+      content: Text(
+        message,
+        style: const TextStyle(color: Colors.black87),
+      ),
+      backgroundColor: Colors.lightGreenAccent,
     ),
   );
 }
@@ -23,7 +29,10 @@ void showSuccessMessage(BuildContext context, {required String message}) {
 void showInfoMessage(BuildContext context, {required String message}) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
-      content: Text(message),
+      content: Text(
+        message,
+        style: const TextStyle(color: Colors.black87),
+      ),
       backgroundColor: Colors.blueAccent,
     ),
   );

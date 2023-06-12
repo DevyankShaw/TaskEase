@@ -116,7 +116,9 @@ class _InputMobileNoViewState extends State<InputMobileNoView> {
                     decoration: const InputDecoration(
                       label: Text('Mobile No'),
                       hintText: 'Enter Mobile No',
-                      border: OutlineInputBorder(),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                      ),
                     ),
                     keyboardType: TextInputType.phone,
                     validator: (value) {
@@ -207,7 +209,9 @@ class _InputMobileOtpViewState extends State<InputMobileOtpView> {
               decoration: const InputDecoration(
                 label: Text('Mobile OTP'),
                 hintText: 'Enter Mobile OTP',
-                border: OutlineInputBorder(),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                ),
               ),
               maxLength: 6,
               keyboardType: TextInputType.phone,
