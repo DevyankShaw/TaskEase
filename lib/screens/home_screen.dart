@@ -25,8 +25,6 @@ class _HomeScreenState extends State<HomeScreen> {
       taskStatus: TaskStatus.notStarted,
       createdAt: DateTime.now(),
       createdBy: 'Shyam(762762)',
-      updatedAt: DateTime.now(),
-      updatedBy: 'Shyam(267622)',
     ),
     Task(
       taskId: 'task_id2',
@@ -37,8 +35,6 @@ class _HomeScreenState extends State<HomeScreen> {
       taskStatus: TaskStatus.inProgress,
       createdAt: DateTime.now(),
       createdBy: 'Shyam(762762)',
-      updatedAt: DateTime.now(),
-      updatedBy: 'Shyam(267622)',
     ),
     Task(
       taskId: 'task_id3',
@@ -46,8 +42,6 @@ class _HomeScreenState extends State<HomeScreen> {
       taskStatus: TaskStatus.underReview,
       createdAt: DateTime.now(),
       createdBy: 'Shyam(762762)',
-      updatedAt: DateTime.now(),
-      updatedBy: 'Shyam(267622)',
     ),
     Task(
       taskId: 'task_id4',
@@ -55,8 +49,6 @@ class _HomeScreenState extends State<HomeScreen> {
       taskStatus: TaskStatus.notStarted,
       createdAt: DateTime.now(),
       createdBy: 'Shyam(762762)',
-      updatedAt: DateTime.now(),
-      updatedBy: 'Shyam(267622)',
     ),
     Task(
       taskId: 'task_id5',
@@ -69,8 +61,6 @@ class _HomeScreenState extends State<HomeScreen> {
           .copyWith(hour: 09, minute: 30),
       createdAt: DateTime.now(),
       createdBy: 'Shyam(762762)',
-      updatedAt: DateTime.now(),
-      updatedBy: 'Shyam(267622)',
     ),
     Task(
       taskId: 'task_id6',
@@ -78,8 +68,6 @@ class _HomeScreenState extends State<HomeScreen> {
       taskStatus: TaskStatus.completed,
       createdAt: DateTime.now(),
       createdBy: 'Shyam(762762)',
-      updatedAt: DateTime.now(),
-      updatedBy: 'Shyam(267622)',
     ),
     Task(
       taskId: 'task_id7',
@@ -89,8 +77,6 @@ class _HomeScreenState extends State<HomeScreen> {
       deadline: DateTime.now().copyWith(year: 2022, hour: 16, minute: 30),
       createdAt: DateTime.now(),
       createdBy: 'Shyam(762762)',
-      updatedAt: DateTime.now(),
-      updatedBy: 'Shyam(267622)',
     ),
     Task(
       taskId: 'task_id8',
@@ -98,8 +84,6 @@ class _HomeScreenState extends State<HomeScreen> {
       taskStatus: TaskStatus.notStarted,
       createdAt: DateTime.now(),
       createdBy: 'Shyam(762762)',
-      updatedAt: DateTime.now(),
-      updatedBy: 'Shyam(267622)',
     ),
     Task(
       taskId: 'task_id9',
@@ -108,8 +92,6 @@ class _HomeScreenState extends State<HomeScreen> {
       taskStatus: TaskStatus.completed,
       createdAt: DateTime.now(),
       createdBy: 'Shyam(762762)',
-      updatedAt: DateTime.now().copyWith(year: 2022),
-      updatedBy: 'Shyam(267622)',
     ),
     Task(
       taskId: 'task_id10',
@@ -117,8 +99,6 @@ class _HomeScreenState extends State<HomeScreen> {
       taskStatus: TaskStatus.underReview,
       createdAt: DateTime.now(),
       createdBy: 'Shyam(762762)',
-      updatedAt: DateTime.now(),
-      updatedBy: 'Shyam(267622)',
     ),
   ];
 

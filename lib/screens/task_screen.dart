@@ -115,6 +115,7 @@ class _TaskScreenState extends State<TaskScreen> {
                 width: MediaQuery.of(context).size.width - 24,
                 initialSelection: _taskStatus,
                 controller: _taskStatusController,
+                enabled: widget.taskData.mode == Constants.update,
                 label: const Text('Task Status'),
                 leadingIcon: Icon(getTaskStatusIcon(_taskStatus!)),
                 inputDecorationTheme: const InputDecorationTheme(

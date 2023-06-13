@@ -6,8 +6,6 @@ class Task {
   final TaskStatus taskStatus;
   final DateTime createdAt;
   final String createdBy;
-  final DateTime updatedAt;
-  final String updatedBy;
   final String? remarks;
   final bool? isImportant;
   final DateTime? deadline;
@@ -18,8 +16,6 @@ class Task {
     required this.taskStatus,
     required this.createdAt,
     required this.createdBy,
-    required this.updatedAt,
-    required this.updatedBy,
     this.remarks,
     this.isImportant,
     this.deadline,
