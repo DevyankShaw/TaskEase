@@ -135,7 +135,10 @@ class MyApp extends StatelessWidget {
       GoRoute(
         name: Routes.home.toName,
         path: Routes.home.toPath,
-        builder: (context, state) => const HomeScreen(),
+        builder: (context, state) => ChangeNotifierProvider<TaskProvider>(
+          create: (_) => TaskProvider(),
+          child: const HomeScreen(),
+        ),
       ),
       GoRoute(
         name: Routes.login.toName,
@@ -150,8 +153,10 @@ class MyApp extends StatelessWidget {
       GoRoute(
         name: Routes.task.toName,
         path: Routes.task.toPath,
-        builder: (context, state) =>
-            TaskScreen(taskData: state.extra as TaskData),
+        builder: (context, state) => ChangeNotifierProvider<TaskProvider>(
+          create: (_) => TaskProvider(),
+          child: TaskScreen(taskData: state.extra as TaskData),
+        ),
       ),
     ],
     // redirect to the login page if the user is not logged in

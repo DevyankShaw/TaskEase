@@ -10,7 +10,6 @@ part 'task.g.dart';
 class Task with _$Task {
   @JsonSerializable(explicitToJson: true)
   factory Task({
-    @JsonKey(name: 'task_id') required String taskId,
     @JsonKey(name: 'task_name') required String taskName,
     @JsonKey(name: 'task_status') required TaskStatus taskStatus,
     @JsonKey(name: 'created_at') required DateTime createdAt,

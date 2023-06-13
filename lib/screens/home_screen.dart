@@ -20,14 +20,12 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late final _tasks = <Task>[
     Task(
-      taskId: 'task_id1',
       taskName: 'Make something 1',
       taskStatus: TaskStatus.notStarted,
       createdAt: DateTime.now(),
       createdBy: 'Shyam(762762)',
     ),
     Task(
-      taskId: 'task_id2',
       taskName: 'Make something 2',
       remarks: 'Update something 2',
       isImportant: true,
@@ -37,21 +35,18 @@ class _HomeScreenState extends State<HomeScreen> {
       createdBy: 'Shyam(762762)',
     ),
     Task(
-      taskId: 'task_id3',
       taskName: 'Make something 3',
       taskStatus: TaskStatus.underReview,
       createdAt: DateTime.now(),
       createdBy: 'Shyam(762762)',
     ),
     Task(
-      taskId: 'task_id4',
       taskName: 'Make something 4',
       taskStatus: TaskStatus.notStarted,
       createdAt: DateTime.now(),
       createdBy: 'Shyam(762762)',
     ),
     Task(
-      taskId: 'task_id5',
       taskName: 'Make something 5',
       remarks: 'Update something 5',
       taskStatus: TaskStatus.notStarted,
@@ -63,14 +58,12 @@ class _HomeScreenState extends State<HomeScreen> {
       createdBy: 'Shyam(762762)',
     ),
     Task(
-      taskId: 'task_id6',
       taskName: 'Make something 6',
       taskStatus: TaskStatus.completed,
       createdAt: DateTime.now(),
       createdBy: 'Shyam(762762)',
     ),
     Task(
-      taskId: 'task_id7',
       taskName: 'Make something 7',
       isImportant: true,
       taskStatus: TaskStatus.inProgress,
@@ -79,14 +72,12 @@ class _HomeScreenState extends State<HomeScreen> {
       createdBy: 'Shyam(762762)',
     ),
     Task(
-      taskId: 'task_id8',
       taskName: 'Make something 8',
       taskStatus: TaskStatus.notStarted,
       createdAt: DateTime.now(),
       createdBy: 'Shyam(762762)',
     ),
     Task(
-      taskId: 'task_id9',
       taskName: 'Make something 9',
       isImportant: true,
       taskStatus: TaskStatus.completed,
@@ -94,7 +85,6 @@ class _HomeScreenState extends State<HomeScreen> {
       createdBy: 'Shyam(762762)',
     ),
     Task(
-      taskId: 'task_id10',
       taskName: 'Make something 10',
       taskStatus: TaskStatus.underReview,
       createdAt: DateTime.now(),

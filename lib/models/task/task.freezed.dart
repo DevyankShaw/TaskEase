@@ -20,8 +20,6 @@ Task _$TaskFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Task {
-  @JsonKey(name: 'task_id')
-  String get taskId => throw _privateConstructorUsedError;
   @JsonKey(name: 'task_name')
   String get taskName => throw _privateConstructorUsedError;
   @JsonKey(name: 'task_status')
@@ -48,8 +46,7 @@ abstract class $TaskCopyWith<$Res> {
       _$TaskCopyWithImpl<$Res, Task>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'task_id') String taskId,
-      @JsonKey(name: 'task_name') String taskName,
+      {@JsonKey(name: 'task_name') String taskName,
       @JsonKey(name: 'task_status') TaskStatus taskStatus,
       @JsonKey(name: 'created_at') DateTime createdAt,
       @JsonKey(name: 'created_by') String createdBy,
@@ -71,7 +68,6 @@ class _$TaskCopyWithImpl<$Res, $Val extends Task>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? taskId = null,
     Object? taskName = null,
     Object? taskStatus = null,
     Object? createdAt = null,
@@ -81,10 +77,6 @@ class _$TaskCopyWithImpl<$Res, $Val extends Task>
     Object? deadline = freezed,
   }) {
     return _then(_value.copyWith(
-      taskId: null == taskId
-          ? _value.taskId
-          : taskId // ignore: cast_nullable_to_non_nullable
-              as String,
       taskName: null == taskName
           ? _value.taskName
           : taskName // ignore: cast_nullable_to_non_nullable
@@ -124,8 +116,7 @@ abstract class _$$_TaskCopyWith<$Res> implements $TaskCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'task_id') String taskId,
-      @JsonKey(name: 'task_name') String taskName,
+      {@JsonKey(name: 'task_name') String taskName,
       @JsonKey(name: 'task_status') TaskStatus taskStatus,
       @JsonKey(name: 'created_at') DateTime createdAt,
       @JsonKey(name: 'created_by') String createdBy,
@@ -143,7 +134,6 @@ class __$$_TaskCopyWithImpl<$Res> extends _$TaskCopyWithImpl<$Res, _$_Task>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? taskId = null,
     Object? taskName = null,
     Object? taskStatus = null,
     Object? createdAt = null,
@@ -153,10 +143,6 @@ class __$$_TaskCopyWithImpl<$Res> extends _$TaskCopyWithImpl<$Res, _$_Task>
     Object? deadline = freezed,
   }) {
     return _then(_$_Task(
-      taskId: null == taskId
-          ? _value.taskId
-          : taskId // ignore: cast_nullable_to_non_nullable
-              as String,
       taskName: null == taskName
           ? _value.taskName
           : taskName // ignore: cast_nullable_to_non_nullable
@@ -194,8 +180,7 @@ class __$$_TaskCopyWithImpl<$Res> extends _$TaskCopyWithImpl<$Res, _$_Task>
 @JsonSerializable(explicitToJson: true)
 class _$_Task with DiagnosticableTreeMixin implements _Task {
   _$_Task(
-      {@JsonKey(name: 'task_id') required this.taskId,
-      @JsonKey(name: 'task_name') required this.taskName,
+      {@JsonKey(name: 'task_name') required this.taskName,
       @JsonKey(name: 'task_status') required this.taskStatus,
       @JsonKey(name: 'created_at') required this.createdAt,
       @JsonKey(name: 'created_by') required this.createdBy,
@@ -205,9 +190,6 @@ class _$_Task with DiagnosticableTreeMixin implements _Task {
 
   factory _$_Task.fromJson(Map<String, dynamic> json) => _$$_TaskFromJson(json);
 
-  @override
-  @JsonKey(name: 'task_id')
-  final String taskId;
   @override
   @JsonKey(name: 'task_name')
   final String taskName;
@@ -232,7 +214,7 @@ class _$_Task with DiagnosticableTreeMixin implements _Task {
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'Task(taskId: $taskId, taskName: $taskName, taskStatus: $taskStatus, createdAt: $createdAt, createdBy: $createdBy, remarks: $remarks, isImportant: $isImportant, deadline: $deadline)';
+    return 'Task(taskName: $taskName, taskStatus: $taskStatus, createdAt: $createdAt, createdBy: $createdBy, remarks: $remarks, isImportant: $isImportant, deadline: $deadline)';
   }
 
   @override
@@ -240,7 +222,6 @@ class _$_Task with DiagnosticableTreeMixin implements _Task {
     super.debugFillProperties(properties);
     properties
       ..add(DiagnosticsProperty('type', 'Task'))
-      ..add(DiagnosticsProperty('taskId', taskId))
       ..add(DiagnosticsProperty('taskName', taskName))
       ..add(DiagnosticsProperty('taskStatus', taskStatus))
       ..add(DiagnosticsProperty('createdAt', createdAt))
@@ -255,7 +236,6 @@ class _$_Task with DiagnosticableTreeMixin implements _Task {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_Task &&
-            (identical(other.taskId, taskId) || other.taskId == taskId) &&
             (identical(other.taskName, taskName) ||
                 other.taskName == taskName) &&
             (identical(other.taskStatus, taskStatus) ||
@@ -273,8 +253,8 @@ class _$_Task with DiagnosticableTreeMixin implements _Task {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, taskId, taskName, taskStatus,
-      createdAt, createdBy, remarks, isImportant, deadline);
+  int get hashCode => Object.hash(runtimeType, taskName, taskStatus, createdAt,
+      createdBy, remarks, isImportant, deadline);
 
   @JsonKey(ignore: true)
   @override
@@ -292,8 +272,7 @@ class _$_Task with DiagnosticableTreeMixin implements _Task {
 
 abstract class _Task implements Task {
   factory _Task(
-      {@JsonKey(name: 'task_id') required final String taskId,
-      @JsonKey(name: 'task_name') required final String taskName,
+      {@JsonKey(name: 'task_name') required final String taskName,
       @JsonKey(name: 'task_status') required final TaskStatus taskStatus,
       @JsonKey(name: 'created_at') required final DateTime createdAt,
       @JsonKey(name: 'created_by') required final String createdBy,
@@ -303,9 +282,6 @@ abstract class _Task implements Task {
 
   factory _Task.fromJson(Map<String, dynamic> json) = _$_Task.fromJson;
 
-  @override
-  @JsonKey(name: 'task_id')
-  String get taskId;
   @override
   @JsonKey(name: 'task_name')
   String get taskName;

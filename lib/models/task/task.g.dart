@@ -7,7 +7,6 @@ part of 'task.dart';
 // **************************************************************************
 
 _$_Task _$$_TaskFromJson(Map<String, dynamic> json) => _$_Task(
-      taskId: json['task_id'] as String,
       taskName: json['task_name'] as String,
       taskStatus: $enumDecode(_$TaskStatusEnumMap, json['task_status']),
       createdAt: DateTime.parse(json['created_at'] as String),
@@ -20,7 +19,6 @@ _$_Task _$$_TaskFromJson(Map<String, dynamic> json) => _$_Task(
     );
 
 Map<String, dynamic> _$$_TaskToJson(_$_Task instance) => <String, dynamic>{
-      'task_id': instance.taskId,
       'task_name': instance.taskName,
       'task_status': _$TaskStatusEnumMap[instance.taskStatus]!,
       'created_at': instance.createdAt.toIso8601String(),

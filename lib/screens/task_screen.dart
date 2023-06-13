@@ -1,6 +1,8 @@
+import 'package:appwrite_hackathon/providers/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 import '../models/models.dart';
 import '../utilities/utilities.dart';
@@ -25,7 +27,7 @@ class _TaskScreenState extends State<TaskScreen> {
   late final _deadlineController = TextEditingController();
   late final _remarksController = TextEditingController();
 
-  TaskStatus? _taskStatus;
+  TaskStatus _taskStatus = TaskStatus.notStarted;
   DateTime? _deadline;
   bool _isImportant = false;
   bool _submitting = false;
@@ -47,9 +49,7 @@ class _TaskScreenState extends State<TaskScreen> {
 
   _init() {
     if (widget.taskData.mode == Constants.add) {
-      final firstTaskStatus = TaskStatus.values.first;
-      _taskStatus = firstTaskStatus;
-      _taskStatusController.text = getTaskStatusName(_taskStatus!);
+      _taskStatusController.text = getTaskStatusName(_taskStatus);
     } else {
       final data = widget.taskData.data;
       if (data == null) {
@@ -58,7 +58,7 @@ class _TaskScreenState extends State<TaskScreen> {
 
       _taskNameController.text = data.taskName;
       _taskStatus = data.taskStatus;
-      _taskStatusController.text = getTaskStatusName(_taskStatus!);
+      _taskStatusController.text = getTaskStatusName(_taskStatus);
       _deadline = data.deadline;
       _deadlineController.text = _deadline != null
           ? DateFormat('dd/MM/yyyy hh:mm a').format(_deadline!)
@@ -94,6 +94,7 @@ class _TaskScreenState extends State<TaskScreen> {
             children: [
               TextFormField(
                 controller: _taskNameController,
+                maxLength: 50,
                 decoration: const InputDecoration(
                   label: Text('Task Name'),
                   hintText: 'Enter Task Name',
@@ -117,7 +118,7 @@ class _TaskScreenState extends State<TaskScreen> {
                 controller: _taskStatusController,
                 enabled: widget.taskData.mode == Constants.update,
                 label: const Text('Task Status'),
-                leadingIcon: Icon(getTaskStatusIcon(_taskStatus!)),
+                leadingIcon: Icon(getTaskStatusIcon(_taskStatus)),
                 inputDecorationTheme: const InputDecorationTheme(
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(8)),
@@ -133,7 +134,7 @@ class _TaskScreenState extends State<TaskScreen> {
                     .toList(),
                 onSelected: (TaskStatus? status) {
                   setState(() {
-                    _taskStatus = status;
+                    _taskStatus = status ?? TaskStatus.notStarted;
                   });
                 },
               ),
@@ -179,6 +180,7 @@ class _TaskScreenState extends State<TaskScreen> {
               TextFormField(
                 controller: _remarksController,
                 maxLines: 4,
+                maxLength: 100,
                 decoration: const InputDecoration(
                   label: Text('Remarks'),
                   hintText: 'Enter Remarks',
@@ -242,7 +244,21 @@ class _TaskScreenState extends State<TaskScreen> {
           _submitting = true;
         });
 
-        await Future.delayed(const Duration(seconds: 1));
+        final remarks = _remarksController.text.trim();
+
+        if (widget.taskData.mode == Constants.add) {
+          final data = Task(
+            taskName: _taskNameController.text.trim(),
+            taskStatus: _taskStatus,
+            createdAt: DateTime.now(),
+            createdBy: '',
+            deadline: _deadline,
+            isImportant: _isImportant,
+            remarks: remarks.isNotEmpty ? remarks : null,
+          );
+          
+          await context.read<TaskProvider>().addTask(taskData: data);
+        } else {}
 
         showSuccessMessage(
           context,

@@ -13,6 +13,12 @@ class Constants {
   // Function Id
   static const String triggerFcm = 'trigger_fcm';
 
+  // Database Id
+  static const String taskManagement = 'task_management';
+
+  // Collection Id
+  static const String tasks = 'tasks';
+
   // Task Status
   static const String notStarted = 'Not Started';
   static const String inProgress = 'In Progress';
