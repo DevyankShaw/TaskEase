@@ -68,7 +68,7 @@ class TaskCard extends StatelessWidget {
                       size: 18,
                     ),
                   ),
-                  if (data.isImportant ?? false)
+                  if (data.isImportant)
                     const Tooltip(
                       message: 'Important',
                       child: Icon(

@@ -63,7 +63,7 @@ class _TaskScreenState extends State<TaskScreen> {
       _deadlineController.text = _deadline != null
           ? DateFormat('dd/MM/yyyy hh:mm a').format(_deadline!)
           : '';
-      _isImportant = data.isImportant ?? false;
+      _isImportant = data.isImportant;
       _remarksController.text = data.remarks ?? '';
     }
 

@@ -1,5 +1,5 @@
-import '../utilities/utilities.dart';
-import 'models.dart';
+import '../../utilities/utilities.dart';
+import '../models.dart';
 
 class TaskData {
   final String mode;
