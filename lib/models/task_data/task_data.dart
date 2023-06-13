@@ -1,12 +1,11 @@
 import '../../utilities/utilities.dart';
-import '../models.dart';
 
 class TaskData {
   final String mode;
-  final Task? data;
+  final String? documentId;
 
   TaskData({
     this.mode = Constants.add,
-    this.data,
+    this.documentId,
   });
 }

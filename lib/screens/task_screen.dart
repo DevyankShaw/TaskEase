@@ -31,6 +31,7 @@ class _TaskScreenState extends State<TaskScreen> {
   DateTime? _deadline;
   bool _isImportant = false;
   bool _submitting = false;
+  bool _loadingTask = false;
 
   @override
   void initState() {
@@ -47,27 +48,12 @@ class _TaskScreenState extends State<TaskScreen> {
     super.dispose();
   }
 
-  _init() {
+  _init() async {
     if (widget.taskData.mode == Constants.add) {
       _taskStatusController.text = getTaskStatusName(_taskStatus);
     } else {
-      final data = widget.taskData.data;
-      if (data == null) {
-        return;
-      }
-
-      _taskNameController.text = data.taskName;
-      _taskStatus = data.taskStatus;
-      _taskStatusController.text = getTaskStatusName(_taskStatus);
-      _deadline = data.deadline;
-      _deadlineController.text = _deadline != null
-          ? DateFormat('dd/MM/yyyy hh:mm a').format(_deadline!)
-          : '';
-      _isImportant = data.isImportant;
-      _remarksController.text = data.remarks ?? '';
+      await _getTask();
     }
-
-    setState(() {});
   }
 
   @override
@@ -81,129 +67,138 @@ class _TaskScreenState extends State<TaskScreen> {
             IconButton(
               tooltip: 'Delete',
               onPressed: () {},
-              icon: const Icon(Icons.delete_outline_outlined),
+              icon: const Icon(Icons.auto_delete_outlined),
             ),
         ],
       ),
-      body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.all(12),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              TextFormField(
-                controller: _taskNameController,
-                maxLength: 50,
-                decoration: const InputDecoration(
-                  label: Text('Task Name'),
-                  hintText: 'Enter Task Name',
-                  prefixIcon: Icon(Icons.task_outlined),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                  ),
-                ),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Enter Task Name';
-                  } else {
-                    return null;
-                  }
-                },
-              ),
-              const SizedBox(height: 12),
-              DropdownMenu<TaskStatus>(
-                width: MediaQuery.of(context).size.width - 24,
-                initialSelection: _taskStatus,
-                controller: _taskStatusController,
-                enabled: widget.taskData.mode == Constants.update,
-                label: const Text('Task Status'),
-                leadingIcon: Icon(getTaskStatusIcon(_taskStatus)),
-                inputDecorationTheme: const InputDecorationTheme(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                  ),
-                ),
-                dropdownMenuEntries: TaskStatus.values
-                    .map(
-                      (taskStatus) => DropdownMenuEntry(
-                        label: getTaskStatusName(taskStatus),
-                        value: taskStatus,
+      body: !_loadingTask
+          ? SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.all(12),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    TextFormField(
+                      controller: _taskNameController,
+                      maxLength: 50,
+                      decoration: const InputDecoration(
+                        label: Text('Task Name'),
+                        hintText: 'Enter Task Name',
+                        prefixIcon: Icon(Icons.task_outlined),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                        ),
                       ),
-                    )
-                    .toList(),
-                onSelected: (TaskStatus? status) {
-                  setState(() {
-                    _taskStatus = status ?? TaskStatus.notStarted;
-                  });
-                },
-              ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: _deadlineController,
-                readOnly: true,
-                onTap: () async {
-                  _deadline = await _showDateTimePicker(_deadline);
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Enter Task Name';
+                        } else {
+                          return null;
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 8),
+                    IgnorePointer(
+                      ignoring: widget.taskData.mode == Constants.add,
+                      child: DropdownMenu<TaskStatus>(
+                        width: MediaQuery.of(context).size.width - 24,
+                        initialSelection: _taskStatus,
+                        controller: _taskStatusController,
+                        label: const Text('Task Status'),
+                        leadingIcon: Icon(getTaskStatusIcon(_taskStatus)),
+                        inputDecorationTheme: const InputDecorationTheme(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                          ),
+                        ),
+                        dropdownMenuEntries: TaskStatus.values
+                            .map(
+                              (taskStatus) => DropdownMenuEntry(
+                                label: getTaskStatusName(taskStatus),
+                                value: taskStatus,
+                              ),
+                            )
+                            .toList(),
+                        onSelected: (TaskStatus? status) {
+                          setState(() {
+                            _taskStatus = status ?? TaskStatus.notStarted;
+                          });
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextFormField(
+                      controller: _deadlineController,
+                      readOnly: true,
+                      onTap: () async {
+                        _deadline = await _showDateTimePicker(_deadline);
 
-                  if (_deadline != null) {
-                    _deadlineController.text =
-                        DateFormat('dd/MM/yyyy hh:mm a').format(_deadline!);
-                  }
-                },
-                decoration: const InputDecoration(
-                  label: Text('Deadline'),
-                  hintText: 'Select Deadline',
-                  prefixIcon: Icon(Icons.timer_outlined),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                  ),
+                        if (_deadline != null) {
+                          _deadlineController.text =
+                              DateFormat('dd/MM/yyyy hh:mm a')
+                                  .format(_deadline!);
+                        }
+                      },
+                      decoration: const InputDecoration(
+                        label: Text('Deadline'),
+                        hintText: 'Select Deadline',
+                        prefixIcon: Icon(Icons.timer_outlined),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    ListTile(
+                      leading: const Icon(Icons.priority_high_outlined),
+                      title: const Text('Important'),
+                      shape: const OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey),
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                      ),
+                      trailing: Switch(
+                        value: _isImportant,
+                        onChanged: (bool value) {
+                          setState(() {
+                            _isImportant = value;
+                          });
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextFormField(
+                      controller: _remarksController,
+                      maxLines: 4,
+                      maxLength: 100,
+                      decoration: const InputDecoration(
+                        label: Text('Remarks'),
+                        hintText: 'Enter Remarks',
+                        prefixIcon: Icon(Icons.feed_outlined),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    _submitting
+                        ? const CircularProgressIndicator()
+                        : ElevatedButton.icon(
+                            onPressed: () => _submit(),
+                            icon: Icon(
+                              widget.taskData.mode == Constants.add
+                                  ? Icons.post_add_outlined
+                                  : Icons.edit_note_outlined,
+                            ),
+                            label: const Text('Submit'),
+                            style: ElevatedButton.styleFrom(
+                                fixedSize: const Size(120, 40)),
+                          )
+                  ],
                 ),
               ),
-              const SizedBox(height: 12),
-              ListTile(
-                leading: const Icon(Icons.priority_high_outlined),
-                title: const Text('Important'),
-                shape: const OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey),
-                  borderRadius: BorderRadius.all(Radius.circular(8)),
-                ),
-                trailing: Switch(
-                  value: _isImportant,
-                  onChanged: (bool value) {
-                    setState(() {
-                      _isImportant = value;
-                    });
-                  },
-                ),
-              ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: _remarksController,
-                maxLines: 4,
-                maxLength: 100,
-                decoration: const InputDecoration(
-                  label: Text('Remarks'),
-                  hintText: 'Enter Remarks',
-                  prefixIcon: Icon(Icons.feed_outlined),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 24),
-              _submitting
-                  ? const CircularProgressIndicator()
-                  : ElevatedButton.icon(
-                      onPressed: () => _submit(),
-                      icon: const Icon(Icons.post_add_outlined),
-                      label: const Text('Submit'),
-                      style: ElevatedButton.styleFrom(
-                          fixedSize: const Size(120, 40)),
-                    )
-            ],
-          ),
-        ),
-      ),
+            )
+          : const Center(child: CircularProgressIndicator()),
     );
   }
 
@@ -237,6 +232,45 @@ class _TaskScreenState extends State<TaskScreen> {
           );
   }
 
+  Future<void> _getTask() async {
+    try {
+      setState(() {
+        _loadingTask = true;
+      });
+
+      final documentId = widget.taskData.documentId;
+
+      if (documentId == null) {
+        showErrorMessage(
+          context,
+          message: 'Something went wrong. Please try again later',
+        );
+        debugPrint('Document Id can\'t be null');
+        return;
+      }
+
+      final taskData =
+          await context.read<TaskProvider>().getTask(documentId: documentId);
+
+      _taskNameController.text = taskData.taskName;
+      _taskStatus = taskData.taskStatus;
+      _taskStatusController.text = getTaskStatusName(_taskStatus);
+      _deadline = taskData.deadline;
+      _deadlineController.text = _deadline != null
+          ? DateFormat('dd/MM/yyyy hh:mm a').format(_deadline!)
+          : '';
+      _isImportant = taskData.isImportant;
+      _remarksController.text = taskData.remarks ?? '';
+
+      setState(() {
+        _loadingTask = false;
+      });
+    } catch (error, stackTrace) {
+      showErrorMessage(context, message: error.toString());
+      debugPrint('Error $error occurred at stackTrace $stackTrace');
+    }
+  }
+
   Future<void> _submit() async {
     if (_formKey.currentState!.validate()) {
       try {
@@ -256,9 +290,30 @@ class _TaskScreenState extends State<TaskScreen> {
             isImportant: _isImportant,
             remarks: remarks.isNotEmpty ? remarks : null,
           );
-          
+
           await context.read<TaskProvider>().addTask(taskData: data);
-        } else {}
+        } else {
+          final existingData = await context
+              .read<TaskProvider>()
+              .getTask(documentId: widget.taskData.documentId!);
+
+          final data = Task(
+            taskName: _taskNameController.text.trim(),
+            taskStatus: _taskStatus,
+            createdAt: existingData.createdAt,
+            createdBy: existingData.createdBy,
+            deadline: _deadline,
+            isImportant: _isImportant,
+            remarks: remarks.isNotEmpty ? remarks : null,
+          );
+
+          await context.read<TaskProvider>().updateTask(
+                documentId: widget.taskData.documentId!,
+                taskData: data,
+              );
+
+          await context.read<TaskProvider>().getAllTaskDocuments();
+        }
 
         showSuccessMessage(
           context,

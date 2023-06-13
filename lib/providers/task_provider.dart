@@ -10,6 +10,10 @@ class TaskProvider with ChangeNotifier {
 
   late final DatabaseService _databaseService;
 
+  DocumentList? _documentList;
+
+  DocumentList? get documentList => _documentList;
+
   TaskProvider() {
     _initServices();
   }
@@ -56,11 +60,23 @@ class TaskProvider with ChangeNotifier {
     }
   }
 
-  Future<DocumentList> getAllTaskDocuments() async {
+  Future<void> getAllTaskDocuments() async {
     try {
       final documentList = await _databaseService.listDocuments();
 
-      return documentList;
+      _documentList = documentList;
+      notifyListeners();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Task> getTask({required String documentId}) async {
+    try {
+      final document =
+          await _databaseService.getDocument(documentId: documentId);
+
+      return Task.fromJson(document.data);
     } catch (e) {
       rethrow;
     }

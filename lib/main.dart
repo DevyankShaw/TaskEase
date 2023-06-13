@@ -127,6 +127,7 @@ class MyApp extends StatelessWidget {
   }
 
   late final _authProvider = AuthProvider();
+  late final _taskProvider = TaskProvider();
 
   late final GoRouter _router = GoRouter(
     debugLogDiagnostics: true,
@@ -135,8 +136,8 @@ class MyApp extends StatelessWidget {
       GoRoute(
         name: Routes.home.toName,
         path: Routes.home.toPath,
-        builder: (context, state) => ChangeNotifierProvider<TaskProvider>(
-          create: (_) => TaskProvider(),
+        builder: (context, state) => ChangeNotifierProvider<TaskProvider>.value(
+          value: _taskProvider,
           child: const HomeScreen(),
         ),
       ),
@@ -153,8 +154,8 @@ class MyApp extends StatelessWidget {
       GoRoute(
         name: Routes.task.toName,
         path: Routes.task.toPath,
-        builder: (context, state) => ChangeNotifierProvider<TaskProvider>(
-          create: (_) => TaskProvider(),
+        builder: (context, state) => ChangeNotifierProvider<TaskProvider>.value(
+          value: _taskProvider,
           child: TaskScreen(taskData: state.extra as TaskData),
         ),
       ),
