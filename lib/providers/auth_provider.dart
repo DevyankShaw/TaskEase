@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 
 import '../services/services.dart';
 import '../utilities/utilities.dart';
+import 'providers.dart';
 
 class AuthProvider with ChangeNotifier {
   User? _currentUser;
@@ -21,9 +22,14 @@ class AuthProvider with ChangeNotifier {
 
   late final _getFutureLoggedInUser = _getLoggedInUser();
 
+  TaskProvider? _taskProvider;
+
+  TaskProvider? get taskProvider => _taskProvider;
+
   AuthProvider() {
     _initServices();
     _getFutureLoggedInUser;
+    _taskProvider ??= TaskProvider();
   }
 
   _initServices() {
@@ -57,6 +63,8 @@ class AuthProvider with ChangeNotifier {
       );
 
       await _getLoggedInUser();
+
+      _taskProvider = TaskProvider();
     } catch (e) {
       rethrow;
     }
@@ -87,6 +95,7 @@ class AuthProvider with ChangeNotifier {
         _token = null;
       }
 
+      _taskProvider = null;
       _currentUser = null;
       notifyListeners();
     } catch (e) {
@@ -118,6 +127,8 @@ class AuthProvider with ChangeNotifier {
       _initServices();
 
       await _getLoggedInUser();
+
+      _taskProvider = TaskProvider();
 
       // Cache userToken/jwt to redirect to home instead of login if user refreshes the browser
       await SharedPreference.instance.setString(Constants.userToken, userToken);
