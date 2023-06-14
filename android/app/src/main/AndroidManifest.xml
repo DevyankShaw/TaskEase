@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.appwrite.hackathon.appwrite_hackathon">
    <application
-        android:label="appwrite_hackathon"
+        android:label="TaskEase"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

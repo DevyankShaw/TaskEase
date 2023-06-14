@@ -117,7 +117,7 @@ class MyApp extends StatelessWidget {
       create: (_) => _authProvider,
       child: MaterialApp.router(
         routerConfig: _router,
-        title: 'Appwrite Hackathon',
+        title: 'TaskEase',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primarySwatch: Colors.deepPurple,

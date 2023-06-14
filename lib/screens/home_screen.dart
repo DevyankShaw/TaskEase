@@ -32,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Taskify'),
+        title: const Text('TaskEase'),
         actions: [
           if (!kIsWeb)
             IconButton(
