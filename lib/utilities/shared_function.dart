@@ -26,14 +26,24 @@ void showSuccessMessage(BuildContext context, {required String message}) {
   );
 }
 
-void showInfoMessage(BuildContext context, {required String message}) {
+void showInfoMessage(
+  BuildContext context, {
+  required String message,
+  Function()? onUndoPressed,
+}) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       content: Text(
         message,
         style: const TextStyle(color: Colors.black87),
       ),
-      backgroundColor: Colors.blueAccent,
+      action: onUndoPressed != null
+          ? SnackBarAction(
+              label: 'UNDO',
+              onPressed: onUndoPressed,
+            )
+          : null,
+      backgroundColor: Colors.orangeAccent,
     ),
   );
 }

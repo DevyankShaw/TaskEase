@@ -63,10 +63,44 @@ class _TaskScreenState extends State<TaskScreen> {
         titleSpacing: 0,
         title: Text('${widget.taskData.mode} Task'),
         actions: [
-          if (widget.taskData.mode == Constants.update)
+          if (widget.taskData.mode == Constants.update && !_loadingTask)
             IconButton(
               tooltip: 'Delete',
-              onPressed: () {},
+              onPressed: () async {
+                setState(() {
+                  _submitting = true;
+                });
+
+                showInfoMessage(
+                  context,
+                  message: 'Deleting Task',
+                  onUndoPressed: () {
+                    setState(() {
+                      _submitting = false;
+                    });
+                  },
+                );
+
+                await Future.delayed(const Duration(milliseconds: 4000),
+                    () async {
+                  if (_submitting) {
+                    await context
+                        .read<TaskProvider>()
+                        .deleteTask(documentId: widget.taskData.documentId!);
+
+                    await context
+                        .read<TaskProvider>()
+                        .getAllTaskDocuments(reset: true);
+
+                    showSuccessMessage(
+                      context,
+                      message: 'Successfully deleted task',
+                    );
+
+                    context.pop();
+                  }
+                });
+              },
               icon: const Icon(Icons.auto_delete_outlined),
             ),
         ],
