@@ -23,7 +23,9 @@ class _TaskCardLayoutGridState extends State<TaskCardLayoutGrid> {
   @override
   void initState() {
     _scrollController.addListener(_onScroll);
-    _taskProvider.getAllTaskDocuments(reset: true);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _taskProvider.getAllTaskDocuments(reset: true);
+    });
     super.initState();
   }
 

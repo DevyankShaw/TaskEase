@@ -1,5 +1,7 @@
+import 'package:appwrite_hackathon/providers/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 import '../utilities/utilities.dart';
 
@@ -27,8 +29,14 @@ class _SearchFieldState extends State<SearchField> {
       padding: const EdgeInsets.all(12),
       child: TextField(
         controller: _controller,
+        onSubmitted: (taskName) {
+          context.read<TaskProvider>().getAllTaskDocuments(
+                reset: true,
+                enteredTaskName: taskName.trim(),
+              );
+        },
         decoration: InputDecoration(
-          hintText: 'Search tasks',
+          hintText: 'Search by task name',
           prefixIcon: const Icon(Icons.search_outlined),
           suffixIcon: IconButton(
             tooltip: 'Filter',

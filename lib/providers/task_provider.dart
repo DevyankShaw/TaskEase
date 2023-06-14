@@ -75,17 +75,23 @@ class TaskProvider with ChangeNotifier {
     }
   }
 
-  Future<void> getAllTaskDocuments({bool reset = false}) async {
+  Future<void> getAllTaskDocuments({
+    bool reset = false,
+    String? enteredTaskName,
+  }) async {
     try {
       if (reset) {
         // Initial loader will show
         _documentList = null;
         _previousQuery = null;
+        notifyListeners();
       }
 
       await _getFutureCurrentUser;
 
       final currentQuery = [
+        if (enteredTaskName?.isNotEmpty ?? false)
+          Query.search('task_name', enteredTaskName!),
         Query.equal('created_by', _currentUser!.$id),
         Query.limit(10),
         Query.offset(_documentList?.documents.length ?? 0),
