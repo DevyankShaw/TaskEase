@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import '../utilities/utilities.dart';
 import '../widgets/widgets.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -10,7 +11,9 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (_, constraints) {
-        if (kIsWeb && constraints.maxWidth >= 500) {
+        if (kIsWeb &&
+            getDeviceByScreenWidth(constraints.maxWidth) !=
+                Constants.mobileDevice) {
           return const WebLoginView();
         } else {
           return const MobileLoginView();

@@ -1,4 +1,4 @@
-import 'package:appwrite_hackathon/providers/auth_provider.dart';
+import 'package:appwrite_hackathon/providers/providers.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -18,80 +18,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late final _tasks = <Task>[
-    Task(
-      taskName: 'Make something 1',
-      taskStatus: TaskStatus.notStarted,
-      createdAt: DateTime.now(),
-      createdBy: 'Shyam(762762)',
-    ),
-    Task(
-      taskName: 'Make something 2',
-      remarks: 'Update something 2',
-      isImportant: true,
-      deadline: DateTime.now().copyWith(hour: 14, minute: 22),
-      taskStatus: TaskStatus.inProgress,
-      createdAt: DateTime.now(),
-      createdBy: 'Shyam(762762)',
-    ),
-    Task(
-      taskName: 'Make something 3',
-      taskStatus: TaskStatus.underReview,
-      createdAt: DateTime.now(),
-      createdBy: 'Shyam(762762)',
-    ),
-    Task(
-      taskName: 'Make something 4',
-      taskStatus: TaskStatus.notStarted,
-      createdAt: DateTime.now(),
-      createdBy: 'Shyam(762762)',
-    ),
-    Task(
-      taskName: 'Make something 5',
-      remarks: 'Update something 5',
-      taskStatus: TaskStatus.notStarted,
-      isImportant: true,
-      deadline: DateTime.now()
-          .add(const Duration(days: 1))
-          .copyWith(hour: 09, minute: 30),
-      createdAt: DateTime.now(),
-      createdBy: 'Shyam(762762)',
-    ),
-    Task(
-      taskName: 'Make something 6',
-      taskStatus: TaskStatus.completed,
-      createdAt: DateTime.now(),
-      createdBy: 'Shyam(762762)',
-    ),
-    Task(
-      taskName: 'Make something 7',
-      isImportant: true,
-      taskStatus: TaskStatus.inProgress,
-      deadline: DateTime.now().copyWith(year: 2022, hour: 16, minute: 30),
-      createdAt: DateTime.now(),
-      createdBy: 'Shyam(762762)',
-    ),
-    Task(
-      taskName: 'Make something 8',
-      taskStatus: TaskStatus.notStarted,
-      createdAt: DateTime.now(),
-      createdBy: 'Shyam(762762)',
-    ),
-    Task(
-      taskName: 'Make something 9',
-      isImportant: true,
-      taskStatus: TaskStatus.completed,
-      createdAt: DateTime.now(),
-      createdBy: 'Shyam(762762)',
-    ),
-    Task(
-      taskName: 'Make something 10',
-      taskStatus: TaskStatus.underReview,
-      createdAt: DateTime.now(),
-      createdBy: 'Shyam(762762)',
-    ),
-  ];
-
   bool _loggingOut = false;
 
   @override
@@ -142,12 +68,9 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       body: Column(
-        children: [
-          const SearchField(),
-          TaskCardLayoutGrid(
-            crossAxisCount: 2,
-            tasks: _tasks,
-          ),
+        children: const [
+          SearchField(),
+          TaskCardLayoutGrid(),
         ],
       ),
     );

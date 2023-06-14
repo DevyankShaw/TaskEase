@@ -17,68 +17,71 @@ class TaskCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    return InkWell(
-      borderRadius: BorderRadius.circular(8),
-      onTap: onTap,
-      child: Card(
-        margin: const EdgeInsets.all(2),
-        color: getTaskCardBackgroundColor(data.taskStatus),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                data.taskName,
-                style: textTheme.titleLarge!.copyWith(fontSize: 18),
-              ),
-              if (data.remarks != null)
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Text(
-                    data.remarks!,
-                    style: textTheme.bodyMedium!,
-                  ),
+    return SizedBox(
+      width: double.infinity,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(8),
+        onTap: onTap,
+        child: Card(
+          margin: const EdgeInsets.all(2),
+          color: getTaskCardBackgroundColor(data.taskStatus),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(8),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  data.taskName,
+                  style: textTheme.titleLarge!.copyWith(fontSize: 18),
                 ),
-              const SizedBox(height: 20),
-              Wrap(
-                spacing: 4,
-                runSpacing: 4,
-                children: [
-                  if (data.deadline != null)
-                    Tooltip(
-                      message: 'Deadline',
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 2, right: 4),
-                        child: Text(
-                          DateFormat(_getCustomDateFormat())
-                              .format(data.deadline!),
-                          style: textTheme.labelMedium!,
+                if (data.remarks != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Text(
+                      data.remarks!,
+                      style: textTheme.bodyMedium!,
+                    ),
+                  ),
+                const SizedBox(height: 20),
+                Wrap(
+                  spacing: 4,
+                  runSpacing: 4,
+                  children: [
+                    if (data.deadline != null)
+                      Tooltip(
+                        message: 'Deadline',
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 2, right: 4),
+                          child: Text(
+                            DateFormat(_getCustomDateFormat())
+                                .format(data.deadline!),
+                            style: textTheme.labelMedium!,
+                          ),
                         ),
                       ),
-                    ),
-                  Tooltip(
-                    message: getTaskStatusName(data.taskStatus),
-                    child: Icon(
-                      getTaskStatusIcon(data.taskStatus),
-                      size: 18,
-                    ),
-                  ),
-                  if (data.isImportant)
-                    const Tooltip(
-                      message: 'Important',
+                    Tooltip(
+                      message: getTaskStatusName(data.taskStatus),
                       child: Icon(
-                        Icons.priority_high_outlined,
+                        getTaskStatusIcon(data.taskStatus),
                         size: 18,
                       ),
                     ),
-                ],
-              )
-            ],
+                    if (data.isImportant)
+                      const Tooltip(
+                        message: 'Important',
+                        child: Icon(
+                          Icons.priority_high_outlined,
+                          size: 18,
+                        ),
+                      ),
+                  ],
+                )
+              ],
+            ),
           ),
         ),
       ),

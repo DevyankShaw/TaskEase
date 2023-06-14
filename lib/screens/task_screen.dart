@@ -311,9 +311,9 @@ class _TaskScreenState extends State<TaskScreen> {
                 documentId: widget.taskData.documentId!,
                 taskData: data,
               );
-
-          await context.read<TaskProvider>().getAllTaskDocuments();
         }
+
+        await context.read<TaskProvider>().getAllTaskDocuments(reset: true);
 
         showSuccessMessage(
           context,

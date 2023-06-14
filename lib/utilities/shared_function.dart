@@ -102,3 +102,13 @@ IconData getTaskStatusIcon(TaskStatus status) {
       return Icons.question_mark_outlined;
   }
 }
+
+String getDeviceByScreenWidth(double screenWidth) {
+  if (screenWidth < 500) {
+    return Constants.mobileDevice;
+  } else if (screenWidth >= 500 && screenWidth < 900) {
+    return Constants.tabletDevice;
+  } else {
+    return Constants.desktopDevice;
+  }
+}

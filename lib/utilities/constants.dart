@@ -29,6 +29,11 @@ class Constants {
   static const String add = 'Add';
   static const String update = 'Update';
 
+  // Devices
+  static const String mobileDevice = 'Mobile';
+  static const String tabletDevice = 'Tablet';
+  static const String desktopDevice = 'Desktop';
+
   static const String current = 'current';
   static const String userToken = 'userToken';
   static const String mobile = 'mobile';
