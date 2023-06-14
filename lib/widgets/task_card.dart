@@ -39,11 +39,15 @@ class TaskCard extends StatelessWidget {
                   style: textTheme.titleLarge!.copyWith(fontSize: 18),
                 ),
                 if (data.remarks != null)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: Text(
-                      data.remarks!,
-                      style: textTheme.bodyMedium!,
+                  Flexible(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: Text(
+                        data.remarks!,
+                        style: textTheme.bodyMedium!,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 5,
+                      ),
                     ),
                   ),
                 const SizedBox(height: 20),

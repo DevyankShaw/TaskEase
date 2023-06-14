@@ -1,8 +1,8 @@
 import 'package:appwrite/models.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 
 import '../models/models.dart';
 import '../providers/providers.dart';
@@ -60,60 +60,50 @@ class _TaskCardLayoutGridState extends State<TaskCardLayoutGrid> {
             ? 4
             : 6;
     return Expanded(
-      child: Selector<TaskProvider, DocumentList?>(
-        selector: (_, taskProvider) => taskProvider.documentList,
-        builder: (_, documentList, __) {
+      child: Selector<TaskProvider, Tuple2<DocumentList?, bool>>(
+        selector: (_, taskProvider) =>
+            Tuple2(taskProvider.documentList, taskProvider.hasReachedMax),
+        builder: (_, taskProvider, __) {
+          final documentList = taskProvider.item1;
+          final hasReachedMax = taskProvider.item2;
           return documentList != null
               ? documentList.documents.isNotEmpty
-                  ? ListView(
-                      controller: _scrollController
-                        ..addListener(() => _onScroll()),
+                  ? GridView.builder(
+                      controller: _scrollController,
+                      itemCount: hasReachedMax
+                          ? documentList.documents.length
+                          : documentList.documents.length + 1,
+                      physics: const BouncingScrollPhysics(),
                       padding: const EdgeInsets.only(
                         left: 12,
                         right: 12,
                         top: 0,
                         bottom: 10,
                       ),
-                      physics: const BouncingScrollPhysics(),
-                      children: [
-                        LayoutGrid(
-                          // set some flexible track sizes based on the crossAxisCount
-                          columnSizes: [
-                            ...List.generate(crossAxisCount, (_) => 1.fr)
-                                .toList()
-                          ],
-                          // set all the row sizes to auto (self-sizing height)
-                          rowSizes: [
-                            ...List.generate(documentList.total, (_) => auto)
-                                .toList()
-                          ],
-                          rowGap: 8, // equivalent to mainAxisSpacing
-                          columnGap: 8, // equivalent to crossAxisSpacing
-                          // note: there's no childAspectRatio
-                          children: [
-                            // render all the cards with *automatic child placement*
-                            ...documentList.documents.map(
-                              (document) {
-                                final task = Task.fromJson(document.data);
-                                return TaskCard(
-                                  data: task,
-                                  onTap: () {
-                                    context.push(
-                                      Routes.task.toPath,
-                                      extra: TaskData(
-                                        mode: Constants.update,
-                                        documentId: document.$id,
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
-                            ).toList()
-                          ],
-                        ),
-                        if (documentList.documents.length != documentList.total)
-                          const Center(child: CircularProgressIndicator()),
-                      ],
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: crossAxisCount,
+                        crossAxisSpacing: 8,
+                        mainAxisSpacing: 8,
+                        mainAxisExtent: 192,
+                      ),
+                      itemBuilder: (_, index) {
+                        return index >= documentList.documents.length
+                            ? const Center(child: CircularProgressIndicator())
+                            : TaskCard(
+                                data: Task.fromJson(
+                                    documentList.documents[index].data),
+                                onTap: () {
+                                  context.push(
+                                    Routes.task.toPath,
+                                    extra: TaskData(
+                                      mode: Constants.update,
+                                      documentId:
+                                          documentList.documents[index].$id,
+                                    ),
+                                  );
+                                },
+                              );
+                      },
                     )
                   : Center(child: loadAsset(assetName: 'no_task.png'))
               : const Center(child: CircularProgressIndicator());

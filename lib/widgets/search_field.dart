@@ -29,9 +29,8 @@ class _SearchFieldState extends State<SearchField> {
       padding: const EdgeInsets.all(12),
       child: TextField(
         controller: _controller,
-        onSubmitted: (taskName) {
-          context.read<TaskProvider>().getAllTaskDocuments(
-                reset: true,
+        onSubmitted: (taskName) async {
+          await context.read<TaskProvider>().getAllSearchFilterTaskDocuments(
                 enteredTaskName: taskName.trim(),
               );
         },
@@ -147,8 +146,7 @@ class _SearchFieldState extends State<SearchField> {
 
                           await context
                               .read<TaskProvider>()
-                              .getAllTaskDocuments(
-                                reset: true,
+                              .getAllSearchFilterTaskDocuments(
                                 selectedTaskStatus: _taskStatuses,
                               );
 
