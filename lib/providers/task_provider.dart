@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 
 import '../models/models.dart';
 import '../services/services.dart';
+import '../utilities/utilities.dart';
 
 class TaskProvider with ChangeNotifier {
   late final AccountService _accountService;
@@ -78,6 +79,7 @@ class TaskProvider with ChangeNotifier {
   Future<void> getAllTaskDocuments({
     bool reset = false,
     String? enteredTaskName,
+    List<TaskStatus>? selectedTaskStatus,
   }) async {
     try {
       if (reset) {
@@ -92,6 +94,11 @@ class TaskProvider with ChangeNotifier {
       final currentQuery = [
         if (enteredTaskName?.isNotEmpty ?? false)
           Query.search('task_name', enteredTaskName!),
+        if (selectedTaskStatus?.isNotEmpty ?? false)
+          Query.equal(
+            'task_status',
+            selectedTaskStatus!.map((status) => status.name).toList(),
+          ),
         Query.equal('created_by', _currentUser!.$id),
         Query.limit(10),
         Query.offset(_documentList?.documents.length ?? 0),

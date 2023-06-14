@@ -53,6 +53,7 @@ class _SearchFieldState extends State<SearchField> {
 
   _showFilterBottomSheet() {
     final textTheme = Theme.of(context).textTheme;
+    bool applying = false;
     return showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -61,6 +62,7 @@ class _SearchFieldState extends State<SearchField> {
           right: Radius.circular(8),
         ),
       ),
+      constraints: const BoxConstraints.tightFor(height: 240),
       builder: (_) {
         return StatefulBuilder(
           builder: (_, bottomSheetSetState) {
@@ -133,7 +135,34 @@ class _SearchFieldState extends State<SearchField> {
                       ],
                     ),
                   ),
-                )
+                ),
+                const SizedBox(height: 16),
+                applying
+                    ? const CircularProgressIndicator()
+                    : ElevatedButton.icon(
+                        onPressed: () async {
+                          bottomSheetSetState(() {
+                            applying = true;
+                          });
+
+                          await context
+                              .read<TaskProvider>()
+                              .getAllTaskDocuments(
+                                reset: true,
+                                selectedTaskStatus: _taskStatuses,
+                              );
+
+                          bottomSheetSetState(() {
+                            applying = false;
+                          });
+
+                          context.pop();
+                        },
+                        icon: const Icon(Icons.content_paste_search_outlined),
+                        label: const Text('Apply'),
+                        style: ElevatedButton.styleFrom(
+                            fixedSize: const Size(120, 40)),
+                      )
               ],
             );
           },
