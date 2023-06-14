@@ -14,8 +14,15 @@ class TaskProvider with ChangeNotifier {
 
   DocumentList? get documentList => _documentList;
 
+  User? _currentUser;
+
+  late final _getFutureCurrentUser = _getCurrentUser();
+
+  List<String>? _previousQuery;
+
   TaskProvider() {
     _initServices();
+    _getFutureCurrentUser;
   }
 
   _initServices() {
@@ -23,11 +30,19 @@ class TaskProvider with ChangeNotifier {
     _databaseService = DatabaseService();
   }
 
+  Future<void> _getCurrentUser() async {
+    try {
+      _currentUser = await _accountService.get();
+    } catch (error, stackTrace) {
+      debugPrint('Error $error occurred at stackTrace $stackTrace');
+    }
+  }
+
   Future<void> addTask({required Task taskData}) async {
     try {
-      final currentUser = await _accountService.get();
+      await _getFutureCurrentUser;
 
-      final updatedTaskData = taskData.copyWith(createdBy: currentUser.$id);
+      final updatedTaskData = taskData.copyWith(createdBy: _currentUser!.$id);
 
       await _databaseService.createDocument(
         documentId: ID.unique(),
@@ -60,11 +75,39 @@ class TaskProvider with ChangeNotifier {
     }
   }
 
-  Future<void> getAllTaskDocuments() async {
+  Future<void> getAllTaskDocuments({bool reset = false}) async {
     try {
-      final documentList = await _databaseService.listDocuments();
+      if (reset) {
+        // Initial loader will show
+        _documentList = null;
+        _previousQuery = null;
+      }
 
-      _documentList = documentList;
+      await _getFutureCurrentUser;
+
+      final currentQuery = [
+        Query.equal('created_by', _currentUser!.$id),
+        Query.limit(10),
+        Query.offset(_documentList?.documents.length ?? 0),
+      ];
+
+      // This equality of queries is to restrict multiple request coming in
+      // Specially for pagination when scroll to end to load second last datas
+      // which executes twice even data already loaded
+      if (listEquals(_previousQuery, currentQuery)) {
+        return;
+      } else {
+        _previousQuery = currentQuery;
+      }
+
+      final documentList =
+          await _databaseService.listDocuments(queries: currentQuery);
+
+      _documentList = DocumentList(
+        total: documentList.total,
+        documents: List.of(_documentList?.documents ?? [])
+          ..addAll(documentList.documents),
+      );
       notifyListeners();
     } catch (e) {
       rethrow;
