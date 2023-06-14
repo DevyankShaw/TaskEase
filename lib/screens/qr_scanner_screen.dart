@@ -36,31 +36,48 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
         title: const Text('QR Scanner'),
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: MobileScanner(
-            fit: BoxFit.contain,
-            onDetect: (capture) async {
-              final data = capture.barcodes.first.rawValue ?? '';
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        physics: const BouncingScrollPhysics(),
+        child: Column(
+          children: [
+            Text(
+              'Scan the QR code showing in web',
+              style: textTheme.titleLarge,
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height / 1.5,
+              child: MobileScanner(
+                fit: BoxFit.contain,
+                onDetect: (capture) async {
+                  final data = capture.barcodes.first.rawValue ?? '';
 
-              // Restrict to accept scanned data one time only
-              if (_receiverDeviceToken == data || _senderDeviceToken == null) {
-                return;
-              }
+                  // Restrict to accept scanned data one time only
+                  if (_receiverDeviceToken == data ||
+                      _senderDeviceToken == null) {
+                    return;
+                  }
 
-              _receiverDeviceToken = data;
+                  _receiverDeviceToken = data;
 
-              debugPrint('Receiver Device Token - $_receiverDeviceToken');
+                  debugPrint('Receiver Device Token - $_receiverDeviceToken');
 
-              await sendMessageToWeb();
-            },
-          ),
+                  await sendMessageToWeb();
+                },
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'Warning: Once logged in web then session is active for only 15 min. Some functionality might not work once session expires',
+              style: textTheme.labelLarge!.copyWith(color: Colors.redAccent),
+            ),
+          ],
         ),
       ),
     );
