@@ -51,6 +51,6 @@ With TaskEase, task management becomes effortless and efficient, empowering user
 ## Resources
 - [Website Link](https://appwrite-hackathon.web.app)
 - [Youtube Demo Link](https://youtu.be/j7BZmVQopEs)
-- [Mobile APK Link]()
-- [Hashnode Article Link]()
+- [Mobile APK Link](https://github.com/DevyankShaw/TaskEase/blob/master/resources/task_ease.apk)
+- [Hashnode Article Link](https://devyank.hashnode.dev/taskease-a-convenient-task-management-app)
 
