@@ -45,3 +45,6 @@ app.*.map.json
 
 # Node modules
 **/node_modules
+
+# Service accounts
+**/service-account.json
