@@ -39,4 +39,13 @@ class Constants {
   static const String mobile = 'mobile';
   static const String web = 'web';
   static const String na = 'NA';
+
+  // Keys for Testing
+  static const String countryCodeDropdown = 'countryCodeDropdown';
+  static const String imageAsset = 'imageAsset';
+  static const String mobileNoTextField = 'mobileNoTextField';
+  static const String getOtpButton = 'getOtpButton';
+  static const String mobileOtpTextField = 'mobileOtpTextField';
+  static const String submitOtpButton = 'submitOtpButton';
+  static const String allow = 'Allow';
 }

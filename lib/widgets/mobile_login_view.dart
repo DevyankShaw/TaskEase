@@ -1,5 +1,6 @@
 import 'package:appwrite/models.dart';
 import 'package:flutter/material.dart';
+import 'package:otp_autofill/otp_autofill.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/providers.dart';
@@ -91,6 +92,7 @@ class _InputMobileNoViewState extends State<InputMobileNoView> {
                   constraints:
                       const BoxConstraints.tightFor(width: 107, height: 60),
                   child: DropdownButtonFormField<String?>(
+                    key: const ValueKey(Constants.countryCodeDropdown),
                     value: _countryCode,
                     items: countryList.map<DropdownMenuItem<String>>(
                       (country) {
@@ -112,6 +114,7 @@ class _InputMobileNoViewState extends State<InputMobileNoView> {
                 const SizedBox(width: 8),
                 Flexible(
                   child: TextFormField(
+                    key: const ValueKey(Constants.mobileNoTextField),
                     controller: _mobileNoController,
                     decoration: const InputDecoration(
                       label: Text('Mobile No'),
@@ -138,6 +141,7 @@ class _InputMobileNoViewState extends State<InputMobileNoView> {
             _generatingOtp
                 ? const CircularProgressIndicator()
                 : ElevatedButton.icon(
+                    key: const ValueKey(Constants.getOtpButton),
                     onPressed: () => _generateOtp(),
                     icon: const Icon(Icons.phonelink_outlined),
                     label: const Text('Get OTP'),
@@ -182,16 +186,32 @@ class InputMobileOtpView extends StatefulWidget {
 }
 
 class _InputMobileOtpViewState extends State<InputMobileOtpView> {
-  late final _mobileOtpController = TextEditingController();
-
   late final _formKey = GlobalKey<FormState>();
   late final _authProvider = context.read<AuthProvider>();
+  late final OTPTextEditController _mobileOtpController;
+  late final _otpInteractor = OTPInteractor();
 
   bool _loggingIn = false;
 
   @override
+  void initState() {
+    _mobileOtpController = OTPTextEditController(
+      codeLength: 6,
+      onCodeReceive: (code) => debugPrint('Received OTP is - $code'),
+      otpInteractor: _otpInteractor,
+    )..startListenUserConsent(
+        (code) {
+          final exp = RegExp(r'(\d{6})');
+          return exp.stringMatch(code ?? '') ?? '';
+        },
+      );
+    super.initState();
+  }
+
+  @override
   void dispose() {
-    _mobileOtpController.dispose();
+    _otpInteractor.stopListenForCode();
+    _mobileOtpController.stopListen();
     super.dispose();
   }
 
@@ -205,6 +225,7 @@ class _InputMobileOtpViewState extends State<InputMobileOtpView> {
           children: [
             loadAsset(assetName: 'otp.png'),
             TextFormField(
+              key: const ValueKey(Constants.mobileOtpTextField),
               controller: _mobileOtpController,
               decoration: const InputDecoration(
                 label: Text('Mobile OTP'),
@@ -214,7 +235,8 @@ class _InputMobileOtpViewState extends State<InputMobileOtpView> {
                 ),
               ),
               maxLength: 6,
-              keyboardType: TextInputType.phone,
+              autofillHints: const [AutofillHints.oneTimeCode],
+              keyboardType: TextInputType.number,
               validator: (value) {
                 if (value!.isEmpty) {
                   return 'Enter Mobile OTP';
@@ -229,6 +251,7 @@ class _InputMobileOtpViewState extends State<InputMobileOtpView> {
             _loggingIn
                 ? const CircularProgressIndicator()
                 : ElevatedButton.icon(
+                    key: const ValueKey(Constants.submitOtpButton),
                     onPressed: () => _loginWithOtp(),
                     icon: const Icon(Icons.login_outlined),
                     label: const Text('Submit'),

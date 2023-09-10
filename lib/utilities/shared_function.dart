@@ -63,6 +63,7 @@ Future<void> sendPushMessage({
 }
 
 Widget loadAsset({required String assetName, double? height}) => Material(
+      key: const ValueKey(Constants.imageAsset),
       type: MaterialType.transparency,
       elevation: 10.0,
       child: Image.asset('assets/$assetName', height: height),
