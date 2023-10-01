@@ -47,6 +47,19 @@ With TaskEase, task management becomes effortless and efficient, empowering user
     - Authentication (Phone)
     - Database
     - Cloud Functions - Node.js
+
+## Demo
+
+https://github.com/DevyankShaw/TaskEase/assets/47057254/2eb79a29-8fdc-49c4-bf0a-b4560421e705
+
+## Testing
+| Flutter Integration Test | Patrol Integration Test |
+|--------|--------|
+| ![flutter_integration_test](https://github.com/DevyankShaw/TaskEase/assets/47057254/78718fa4-f587-4c72-8b95-bb070ee48085) | ![patrol_integration_test](https://github.com/DevyankShaw/TaskEase/assets/47057254/7aa7c319-5cad-46e9-9ea2-99d5d6b283b6) |
+
+| Flutter Integration Test (Log) | Patrol Integration Test (Log) |
+|--------|--------|
+| Due to non-interaction of native dialogs/notifications etc. like here Allow to paste code in mobile otp text field doesn't work as the finder can't able to recognize the "Allow" button. Hence test failed. ![flutter_integration_test](https://github.com/DevyankShaw/TaskEase/assets/47057254/d66ca740-9763-466f-af17-e6de214ac779) | Whereas patrol provides custom finders which can interact with native dialogs/notification etc. and thus able to recognize the "Allow" button. Hence test passed. ![patrol_integration_test](https://github.com/DevyankShaw/TaskEase/assets/47057254/621065b5-08dd-4836-b0be-4c9a2f89f588) |
         
 ## Resources
 - [Website Link](https://appwrite-hackathon.web.app)
