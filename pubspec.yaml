@@ -85,7 +85,16 @@ dev_dependencies:
   build_runner: ^2.3.3
   freezed: ^2.3.5
   json_serializable: ^6.6.2
+  patrol: ^2.2.4
 
+
+patrol:
+  app_name: appwrite_hackathon
+  android:
+    package_name: com.appwrite.hackathon.appwrite_hackathon
+  ios:
+    bundle_id: com.appwrite.hackathon.appwriteHackathon
+    
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

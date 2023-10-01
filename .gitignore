@@ -48,3 +48,6 @@ app.*.map.json
 
 # Service accounts
 **/service-account.json
+
+# Ignore patrol file
+/integration_test/test_bundle.dart

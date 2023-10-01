@@ -17,12 +17,12 @@ void main() {
 
       // Find mobile no view widgets
       final imageAssetMobileNo =
-          find.byKey(const ValueKey(Constants.imageAsset));
+          find.byKey(const Key(Constants.imageAsset));
       final countryCodeDropdown =
-          find.byKey(const ValueKey(Constants.countryCodeDropdown));
+          find.byKey(const Key(Constants.countryCodeDropdown));
       final mobileNoTextField =
-          find.byKey(const ValueKey(Constants.mobileNoTextField));
-      final getOtpButton = find.byKey(const ValueKey(Constants.getOtpButton));
+          find.byKey(const Key(Constants.mobileNoTextField));
+      final getOtpButton = find.byKey(const Key(Constants.getOtpButton));
 
       // Verify mobile no view widgets
       expect(imageAssetMobileNo, findsOneWidget);
@@ -42,11 +42,11 @@ void main() {
 
       // Find mobile otp view widgets
       final imageAssetMobileOtp =
-          find.byKey(const ValueKey(Constants.imageAsset));
+          find.byKey(const Key(Constants.imageAsset));
       final mobileOtpTextField =
-          find.byKey(const ValueKey(Constants.mobileOtpTextField));
+          find.byKey(const Key(Constants.mobileOtpTextField));
       final submitOtpButton =
-          find.byKey(const ValueKey(Constants.submitOtpButton));
+          find.byKey(const Key(Constants.submitOtpButton));
       final allowButton = find.text(Constants.allow);
 
       // Verify mobile otp view widgets

@@ -49,7 +49,7 @@ class _InputMobileNoViewState extends State<InputMobileNoView> {
 
   @override
   void initState() {
-    _init();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _init());
     super.initState();
   }
 
@@ -92,7 +92,7 @@ class _InputMobileNoViewState extends State<InputMobileNoView> {
                   constraints:
                       const BoxConstraints.tightFor(width: 107, height: 60),
                   child: DropdownButtonFormField<String?>(
-                    key: const ValueKey(Constants.countryCodeDropdown),
+                    key: const Key(Constants.countryCodeDropdown),
                     value: _countryCode,
                     items: countryList.map<DropdownMenuItem<String>>(
                       (country) {
@@ -114,7 +114,7 @@ class _InputMobileNoViewState extends State<InputMobileNoView> {
                 const SizedBox(width: 8),
                 Flexible(
                   child: TextFormField(
-                    key: const ValueKey(Constants.mobileNoTextField),
+                    key: const Key(Constants.mobileNoTextField),
                     controller: _mobileNoController,
                     decoration: const InputDecoration(
                       label: Text('Mobile No'),
@@ -141,7 +141,7 @@ class _InputMobileNoViewState extends State<InputMobileNoView> {
             _generatingOtp
                 ? const CircularProgressIndicator()
                 : ElevatedButton.icon(
-                    key: const ValueKey(Constants.getOtpButton),
+                    key: const Key(Constants.getOtpButton),
                     onPressed: () => _generateOtp(),
                     icon: const Icon(Icons.phonelink_outlined),
                     label: const Text('Get OTP'),
@@ -225,7 +225,7 @@ class _InputMobileOtpViewState extends State<InputMobileOtpView> {
           children: [
             loadAsset(assetName: 'otp.png'),
             TextFormField(
-              key: const ValueKey(Constants.mobileOtpTextField),
+              key: const Key(Constants.mobileOtpTextField),
               controller: _mobileOtpController,
               decoration: const InputDecoration(
                 label: Text('Mobile OTP'),
@@ -251,7 +251,7 @@ class _InputMobileOtpViewState extends State<InputMobileOtpView> {
             _loggingIn
                 ? const CircularProgressIndicator()
                 : ElevatedButton.icon(
-                    key: const ValueKey(Constants.submitOtpButton),
+                    key: const Key(Constants.submitOtpButton),
                     onPressed: () => _loginWithOtp(),
                     icon: const Icon(Icons.login_outlined),
                     label: const Text('Submit'),
