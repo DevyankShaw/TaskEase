@@ -55,7 +55,7 @@ https://github.com/DevyankShaw/TaskEase/assets/47057254/2eb79a29-8fdc-49c4-bf0a-
 ## Testing
 | Flutter Integration Test | Patrol Integration Test |
 |--------|--------|
-| ![flutter_integration_test](https://github.com/DevyankShaw/TaskEase/assets/47057254/78718fa4-f587-4c72-8b95-bb070ee48085) | ![patrol_integration_test](https://github.com/DevyankShaw/TaskEase/assets/47057254/7aa7c319-5cad-46e9-9ea2-99d5d6b283b6) |
+| ![flutter_integration_test](https://github.com/DevyankShaw/TaskEase/assets/47057254/78718fa4-f587-4c72-8b95-bb070ee48085) | ![patrol_integration_test](https://github.com/DevyankShaw/TaskEase/assets/47057254/71b3a4de-41ca-4bc6-af13-f868631184ac) |
 
 | Flutter Integration Test (Log) | Patrol Integration Test (Log) |
 |--------|--------|
